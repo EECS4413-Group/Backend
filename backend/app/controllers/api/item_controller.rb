@@ -7,6 +7,7 @@ module Api
       @items = case params_with_current_user[:type]
                when 'owned' then Item.owned
                when 'for_sale_by_owner' then Item.for_sale_by_owner
+               when 'for_sale' then Item.for_sale
                end
       return render json: @items, each_serializer: ItemsSerializer, status: :ok if @items
 
