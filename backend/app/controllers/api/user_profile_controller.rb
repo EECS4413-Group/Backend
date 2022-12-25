@@ -2,6 +2,13 @@
 
 module Api
   class UserProfileController < AuthenticatedController
+    def show
+      @user_profile = UserProfile.find_by(id: current_user_id)
+      return render json: @user_profile, serializer: UserProfilesSerializer, status: :created if @user_profile
+
+      render json: nil, status: :unprocessable_entity
+    end
+
     def create
       @user_profile = UserProfile.find_by(id: current_user_id)
       return render json: { message: 'user already has a profile' }, status: :forbidden if @user_profile
