@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   resources :users
   namespace :api do
     resources :user_wallets, only: %i[show update]
-    resources :user_profiles, only: %i[show update]
+    resources :user_profiles, only: %i[create update]
     resources :items, except: %i[destroy]
   end
 end
