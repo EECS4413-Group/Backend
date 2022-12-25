@@ -1,4 +1,4 @@
-FROM node:16
+FROM node:19.3
 
 
 RUN apt update -qq
@@ -6,8 +6,8 @@ RUN apt update -qq
 WORKDIR /app
 
 # avoid npm installing every time
-#ADD package.json package.json
-#ADD package-lock.json package-lock.json
-#RUN npm install
+ADD package.json package.json
+ADD package-lock.json package-lock.json
+RUN npm install
 
 ADD ./ ./
