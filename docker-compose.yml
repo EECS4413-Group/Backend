@@ -14,27 +14,26 @@ services:
         volumes:
             - "./frontend:/app"
         depends_on:
-            - backend
+            - auth_gateway
         links:
-            - backend
+            - auth_gateway
 
-    backend:
+    auth_gateway:
         build: .
-        image: backend
-        container_name: backend
+        image: auth_gateway
+        container_name: auth_gateway
         ports:
             - "8080:8080"
         expose:
             - "8080"
         environment:
-            RAILS_ENV: development
-            POSTGRES_USER: ${POSTGRES_USER}
-            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-            POSTGRES_DB: ${POSTGRES_DB}
-            POSTGRES_HOST: psg
-        command: bundle exec rails s -p '8080' -b '0.0.0.0'
+            PGUSER: ${POSTGRES_USER}
+            PGPASSWORD: ${POSTGRES_PASSWORD}
+            PGDATABASE: ${POSTGRES_DB}
+            PGHOST: psg
+        command: npm start
         volumes:
-            - "./backend:/app"
+            - "./auth_gateway:/app"
         depends_on:
             - db
         links:
