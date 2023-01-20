@@ -39,11 +39,11 @@ Within each directory should exist an independent api, which performs a specific
 
 |  Name | Purpose | Technology/framework | URI prefix | Owner | Status |
 |---|---|---|---|---|---|
-|  Frontend | Serves the UI to the user | React + redux  | N/A | N/A  | Incomplete|
-|  Auth Gateway | Facilitates User creation and Authentication. This is the only entry point to all other api services  | Express.js   | `/*` (no prefix) | Eli  | In Progress (almost done) |
-|  Catalog  |  Allows marketplace to create items that can be bought and sold | N/A  | `/catalog/*` | N/A  | Not started |
-|  Wallet  | stores user balances  | N/A  | `/wallet/*` | N/A  | Not started |
-|  Marketplace  | Entrypoint for all transactions. When a user decides to buy an item or bid for one, the auction house will talk to Wallet and Catalog to decide what to do.| N/A | `/marketplace/*` | N/A | Not started |
-| Auction Daemon | Listens to active bids and informs listening websockets of live bid updates  | N/A  | `/live_auction/*`| N/A | Not started |
+|  [Frontend](frontend/) | Serves the UI to the user | React + redux  | N/A | N/A  | Incomplete|
+|  [Auth Gateway](auth_gateway/) | Facilitates User creation and Authentication. This is the only entry point to all other api services  | Express.js   | `/*` (no prefix) | Eli  | In Progress (almost done) |
+|  [Catalog](catalog/)  |  Allows marketplace to create items that can be bought and sold | N/A  | `/catalog/*` | N/A  | Not started |
+|  [Wallet](wallet/)  | stores user balances  | N/A  | `/wallet/*` | N/A  | Not started |
+|  [Marketplace](marketplace/)  | Entrypoint for all transactions. When a user decides to buy an item or bid for one, the auction house will talk to Wallet and Catalog to decide what to do.| N/A | `/marketplace/*` | N/A | Not started |
+| [Auction Daemon](marketplace/) | Listens to active bids and informs listening websockets of live bid updates  | N/A  | `/live_auction/*`| N/A | Not started |
 
 
