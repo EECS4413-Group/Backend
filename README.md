@@ -1,17 +1,6 @@
 # MONOREPO
 This Repository contains the entire codebase for our application.
 
-Within each directory should exist an independent api, which performs a specific service. The following is a list of these services
-
-|  Name | Purpose | Technology/framework | URI prefix | Owner | Status |
-|---|---|---|---|---|---|
-|  Frontend | Serves the UI to the user | React + redux  | N/A | N/A  | Incomplete|
-|  Auth Gateway | Facilitates User creation and Authentication. This is the only entry point to all other api services  | Express.js   | `/*` (no prefix) | Eli  | In Progress (almost done) |
-|  Catalog  |  Allows marketplace to create items that can be bought and sold | N/A  | `/catalog/*` | N/A  | Not started |
-|  Wallet  | stores user balances  | N/A  | `/wallet/*` | N/A  | Not started |
-|  Marketplace  | Entrypoint for all transactions. When a user decides to buy an item or bid for one, the auction house will talk to Wallet and Catalog to decide what to do.| N/A | `/marketplace/*` | N/A | Not started |
-| Auction Daemon | Listens to active bids and informs listening websockets of live bid updates  | N/A  | `/live_auction/*`| N/A | Not started |
-
 
 ## GETTING STARTED
 The following should be installed on your pc and running:
@@ -45,5 +34,16 @@ If you intend on developing the various api's, it is required to have these pack
 
 ## CONVENTIONS
 To make it easy to understand what is going on, please document the available endpoints for your system in the README found within each microservice directory.
+
+Within each directory should exist an independent api, which performs a specific service. The following is a list of these services. The entire backend can only be accessed via the `auth gateway`, and as such, to access a specific service, you must make a request to the `auth gateway` with a URI prefix that indicates where the request is heading. See the table below for further information.
+
+|  Name | Purpose | Technology/framework | URI prefix | Owner | Status |
+|---|---|---|---|---|---|
+|  Frontend | Serves the UI to the user | React + redux  | N/A | N/A  | Incomplete|
+|  Auth Gateway | Facilitates User creation and Authentication. This is the only entry point to all other api services  | Express.js   | `/*` (no prefix) | Eli  | In Progress (almost done) |
+|  Catalog  |  Allows marketplace to create items that can be bought and sold | N/A  | `/catalog/*` | N/A  | Not started |
+|  Wallet  | stores user balances  | N/A  | `/wallet/*` | N/A  | Not started |
+|  Marketplace  | Entrypoint for all transactions. When a user decides to buy an item or bid for one, the auction house will talk to Wallet and Catalog to decide what to do.| N/A | `/marketplace/*` | N/A | Not started |
+| Auction Daemon | Listens to active bids and informs listening websockets of live bid updates  | N/A  | `/live_auction/*`| N/A | Not started |
 
 
