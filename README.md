@@ -35,7 +35,7 @@ If you intend on developing the various api's, it is required to have these pack
 ## CONVENTIONS
 To make it easy to understand what is going on, please document the available endpoints for your system in the README found within each microservice directory.
 
-Within each directory should exist an independent api, which performs a specific service. The following is a list of these services. The entire backend can only be accessed via the `auth gateway`, and as such, to access a specific service, you must make a request to the `auth gateway` with a URI prefix that indicates where the request is heading. See the table below for further information.
+Within each directory should exist an independent api, which performs a specific service. The following is a list of these services. The entire backend can only be accessed via the `auth gateway`, and as such, to access a specific service, you must make a request to the `auth gateway` with a URI prefix that indicates where the request is heading (for example: `http://localhost:8080/marketplace/create_listing`). See the table below for further information.
 
 |  Name | Purpose | Technology/framework | URI prefix | Owner | Status |
 |---|---|---|---|---|---|
