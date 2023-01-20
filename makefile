@@ -10,11 +10,11 @@ help:
 	@ echo "	clean: kill all containers and then delete all container images (ALL images on your computer)"
 	@ echo "  Runtime container introspection tools:"
 	@ echo "	frontend-shell: interactive shell for the frontend container"
-	@ echo "	auth_gateway_shell: interactive shell for the auth_gateway container"
-	@ echo "	auction_daemon_shell: interaction shell for the auction_daemon container"
-	@ echo "	catalog_shell: interaction shell for the catalog container"
-	@ echo "	marketplace_shell: interaction shell for the marketplace container"
-	@ echo "	wallet_shell: interaction shell for the wallet container"
+	@ echo "	auth_gateway-shell: interactive shell for the auth_gateway container"
+	@ echo "	auction_daemon-shell: interaction shell for the auction_daemon container"
+	@ echo "	catalog-shell: interaction shell for the catalog container"
+	@ echo "	marketplace-shell: interaction shell for the marketplace container"
+	@ echo "	wallet-shell: interaction shell for the wallet container"
 
 
 build:
