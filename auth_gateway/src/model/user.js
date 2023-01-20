@@ -86,10 +86,9 @@ class User {
 
 
     async update_password(old_password, new_password) {
-        if (!password) {
-            return null;
+        if (!old_password) {
+            throw InvalidPasswordError('old password not provided');
         }
-
         const old_password_hash = await new Promise((resolve, reject) => {
             bcrypt.hash(old_password, this.#salt, (err, hash) => {
                 if (err) {
@@ -100,6 +99,9 @@ class User {
         })
         if (old_password_hash != this.#password) {
             throw InvalidPasswordError('Incorrect old password');
+        }
+        if (!new_password) {
+            throw InvalidPasswordError('new password not provided');
         }
 
         new_password_hash = await new Promise((resolve, reject) => {
