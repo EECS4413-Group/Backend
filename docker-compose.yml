@@ -35,6 +35,79 @@ services:
         volumes:
             - "./auth_gateway:/app"
         depends_on:
+            - auction_daemon
+            - db
+            - marketplace
+        links:
+            - auction_daemon
+            - db
+            - marketplace
+
+    marketplace:
+        build: .
+        image: marketplace
+        container_name: marketplace
+        expose:
+            - "8083"
+        environment:
+            NAME: marketplace
+        command: tail -F anything
+        volumes:
+            - "./marketplace:/app"
+        depends_on:
+            - catalog
+            - db
+            - wallet
+        links:
+            - catalog
+            - db
+            - wallet
+
+
+    wallet:
+        build: .
+        image: wallet
+        container_name: wallet
+        expose:
+            - "8081"
+        environment:
+            NAME: wallet
+        command: tail -F anything
+        volumes:
+            - "./wallet:/app"
+        depends_on:
+            - db
+        links:
+            - db
+
+    catalog:
+        build: .
+        image: catalog
+        container_name: catalog
+        expose:
+            - "8082"
+        environment:
+            NAME: catalog
+        command: tail -F anything
+        volumes:
+            - "./catalog:/app"
+        depends_on:
+            - db
+        links:
+            - db
+
+    auction_daemon:
+        build: .
+        image: auction_daemon
+        container_name: auction_daemon
+        expose:
+            - "8084"
+        environment:
+            NAME: auction_daemon
+        command: tail -F anything
+        volumes:
+            - "./auction_daemon:/app"
+        depends_on:
             - db
         links:
             - db
