@@ -2,6 +2,7 @@ const { Database } = require('../database/client');
 const { User } = require('../model/user');
 
 const crypto = require('crypto');
+const bcrypt = require('bcrypt');
 
 class Token {
     constructor(token, user) {
@@ -21,7 +22,16 @@ class Token {
     }
 
     static async find_by_token(token) {
-        const row = (await Database.execute("SELECT * FROM tokens WHERE token = $1 LIMIT 1", [token])).rows[0];
+        const hashedToken = await new Promise((resolve, reject) => {
+            bcrypt.hash(token, 0, (err, hash) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve(hash);
+            });
+        });
+        console.log(hashedToken);
+        const row = (await Database.execute("SELECT * FROM tokens WHERE token = $1 LIMIT 1", [hashedToken])).rows[0];
         if (!row) {
             return null;
         }
@@ -42,12 +52,20 @@ class Token {
                 resolve(buffer.toString('hex'));
             });
         });
+        const hashedToken = await new Promise((resolve, reject) => {
+            bcrypt.hash(newToken, 0, (err, hash) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve(hash);
+            });
+        })
         const row = (await Database.execute(
             `INSERT INTO Tokens (token, user_id)
             VALUES ($1, $2) RETURNING *`,
-            [newToken, user.id]
+            [hashedToken, user.id]
         )).rows[0];
-        return new Token(row.token, user);
+        return new Token(newToken, user);
     }
 
 
