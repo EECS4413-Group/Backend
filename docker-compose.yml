@@ -48,7 +48,7 @@ services:
         image: marketplace
         container_name: marketplace
         expose:
-            - "8083"
+            - "8081"
         environment:
             NAME: marketplace
         command: tail -F anything
@@ -69,7 +69,7 @@ services:
         image: wallet
         container_name: wallet
         expose:
-            - "8081"
+            - "8082"
         environment:
             NAME: wallet
         command: tail -F anything
@@ -85,10 +85,13 @@ services:
         image: catalog
         container_name: catalog
         expose:
-            - "8082"
+            - "8083"
         environment:
-            NAME: catalog
-        command: tail -F anything
+            PGUSER: ${POSTGRES_USER}
+            PGPASSWORD: ${POSTGRES_PASSWORD}
+            PGDATABASE: ${CATALOG_PGDATABASE}
+            PGHOST: psg
+        command: npm start
         volumes:
             - "./catalog:/app"
         depends_on:
@@ -100,8 +103,6 @@ services:
         build: .
         image: auction_daemon
         container_name: auction_daemon
-        expose:
-            - "8084"
         environment:
             NAME: auction_daemon
         command: tail -F anything

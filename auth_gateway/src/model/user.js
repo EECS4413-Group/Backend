@@ -125,7 +125,7 @@ class User {
         this.#password = newRow.password
     }
 
-    async update_name(firstName, lastName) {
+    async update_user_info(firstName, lastName) {
         const newRow = (await Database.execute(
             `UPDATE Users
             SET first_name = $1, last_name = $2

@@ -1,18 +1,22 @@
 import axios from 'axios';
-import {store} from '../index';
 
 const makeRequest = (method, url, body, headers) => {
-  const auth_tokens = store.getState().auth;
+  const bearer_token = window.localStorage.getItem("bearer_token");
   if (auth_tokens) {
-        headers['access-token'] = auth_tokens.accessToken
-        headers.client = auth_tokens.accessClient
-        headers.uid = auth_tokens.accessUID
+        headers['authorization'] = bearer_token;
   }
-  return axios({
-    method,
-    url: `${process.env.API_HOST}${url}`,
-    data: body,
-    headers: headers,
+  headers['Content-Type'] = "application/json";
+  return new Promise((resolve, reject) => {
+    axios({
+        method,
+        url: `${process.env.API_HOST}${url}`,
+        data: body,
+        headers: headers,
+      }).then((response) => {
+        resolve(response);
+      }).catch((err) => {
+        reject(err);
+      });
   });
 };
 // similar method signatures
@@ -24,11 +28,11 @@ const get = (url, headers = {}) => {
 const post = (url, body = {}, headers = {}) => {
     return makeRequest('POST', url, body, headers)
 }
-    
+
 const put = (url, body = {}, headers = {}) => {
     return makeRequest('PUT', url, body, headers)
 }
-    
+
 const del = (url, body = {}, headers = {}) => {
     return makeRequest('DELETE', url, body, headers)
 }
@@ -39,6 +43,6 @@ api_wrapper = {
     put: put,
     delete: del,
 }
-    
+
 
 export default api_wrapper;

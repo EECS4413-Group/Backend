@@ -42,8 +42,8 @@ app.post('/verify_login', async (req, res) => {
 
 
 // show bearer token, if valid return 200, else, return 403
-app.post('/change_name', async (req, res) => {
-    UserController.change_name(req, res);
+app.post('/change_user_info', async (req, res) => {
+    UserController.change_user_info(req, res);
 });
 
 
