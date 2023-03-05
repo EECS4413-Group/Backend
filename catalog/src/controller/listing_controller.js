@@ -3,16 +3,18 @@ const { Listing } = require("../model/listing");
 class ListingController {
   static async index(req, res) {
     const name_filters = req.params.search;
-    listings = await Listing.find_all_by_name(name_filters);
+    const listings = await Listing.find_all_by_name(name_filters);
     res.json({ listings: listings });
   }
+
   static async show(req, res) {
     const listing_id = req.params.listing_id;
-    listing = await Listing.find_by_id(listing_id);
+    const listing = await Listing.find_by_id(listing_id);
     if (!listing) {
       res.statusMessage = `listing with id: ${listing_id} does not exist`;
       return res.status(404).end();
     }
+    // TODO: get top bid from auction if normal auction
     res.json(listing);
   }
 
@@ -47,6 +49,7 @@ class ListingController {
     var listing;
     try {
       listing = await Listing.create({
+        owner_id: user.id,
         name,
         description,
         type,
@@ -64,12 +67,19 @@ class ListingController {
   }
 
   static async update(req, res) {
-    const listing_id = req.body.listing_id;
+    const {
+      user,
+      body: { listing_id },
+    } = req.body;
     if (!listing_id) {
       res.statusMessage = "must specify an id";
       return res.status(400).end();
     }
-    listing = await Listing.find_by_id(listing_id);
+    const listing = await Listing.find_by_id(listing_id);
+    if (listing.owner_id != user.id) {
+      res.statusMessage = "you must be the owner to update the listing";
+      return res.status(403).end();
+    }
     await listing.update(req.id);
     res.json(listing);
   }

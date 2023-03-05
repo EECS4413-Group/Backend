@@ -95,10 +95,19 @@ class WalletController {
   }
 
   static async redeem_tokens(req, res) {
+    // FIXED CONSTANT, SHOULD BE LOADED FROM ENVIRONMENT
+    const TOKENS_PER_REDMPTION = 4000;
+    const MS_PER_MINUTES = 60000; 
+    const TIME_BETWEEN_REDEEMS = 60 * 24 * MS_PER_MINUTES;
+
     const { user } = req.body;
     const wallet_redeemer = Wallet.find_by_owner_id(user.id);
-    const MS_PER_MINUTES = 60000;
-    const TIME_BETWEEN_REDEEMS = 60 * 24 * MS_PER_MINUTES;
+
+    if (!wallet_redeemer) {
+      res.statusMessage = `wallet for user with id ${user.id} does not exist`;
+      res.status(404).end();
+    }
+
     if (
       new Date(Date.now().getTime() - TIME_BETWEEN_REDEEMS).getTime() <
       wallet_redeemer.last_redeem_time.getTime()
@@ -107,12 +116,11 @@ class WalletController {
       return res.status(403).end();
     }
 
-    const TOKENS_PER_REDMPTION = 4000;
     wallet_redeemer.update({
       balance: wallet_redeemer.balance + TOKENS_PER_REDMPTION,
       last_redeem_time: Date.now(),
     });
-    res.json(wallet_redeemer).end();
+    res.json(wallet_redeemer);
   }
 
   static async delete() {}

@@ -70,13 +70,13 @@ class Listing {
       );
     });
   }
-  static async create({ name, description, type, start_date, end_date }) {
+  static async create({ owner_id, name, description, type, start_date, end_date }) {
     const listing_id = uuid();
     const row = (
       await Database.execute(
-        `INSERT INTO listings (id, name, description, type, start_date, end_date)
-            VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-        [listing_id, name, description, type, start_date, end_date]
+        `INSERT INTO listings (id, owner_id, name, description, type, start_date, end_date)
+            VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+        [listing_id, owner_id, name, description, type, start_date, end_date]
       )
     ).rows[0];
     return new Listing(
