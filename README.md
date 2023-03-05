@@ -41,9 +41,10 @@ Within each directory should exist an independent api, which performs a specific
 |---|---|---|---|---|---|
 |  [Frontend](frontend/) | Serves the UI to the user | React + redux  | N/A | N/A  | Incomplete|
 |  [Auth Gateway](auth_gateway/) | Facilitates User creation and Authentication. This is the only entry point to all other api services  | Express.js   | `/*` (no prefix) | Eli  | In Progress (almost done) |
-|  [Catalog](catalog/)  |  Allows marketplace to create items that can be bought and sold | Ruby-On-Rails  | `/catalog/*` | Eli  | Just Started |
-|  [Wallet](wallet/)  | stores user balances  | N/A  | `/wallet/*` | N/A  | Not started |
+|  [Catalog](catalog/)  |  Allows marketplace to create items that can be bought and sold | Express.js  | `/catalog/*` | Eli  | In progress |
+|  [Wallet](wallet/)  | stores user balances and transactions  | Express.js  | `/wallet/*` | Eli  | In Progress |
 |  [Marketplace](marketplace/)  | Entrypoint for all transactions. When a user decides to buy an item or bid for one, the auction house will talk to Wallet and Catalog to decide what to do.| N/A | `/marketplace/*` | N/A | Not started |
-| [Auction Daemon](marketplace/) | Listens to active bids and informs listening websockets of live bid updates  | N/A  | `/live_auction/*`| N/A | Not started |
+| [Auction Daemon](marketplace/) | Listens to active bids and closes them when needed | N/A  | `/auction/*`| N/A | Not started |
+| [Shipping](marketplace/) | Lets users confirm orders and specify shipping location | N/A  | `/shipping/*`| N/A | Not started |
 
 

@@ -1,5 +1,4 @@
 const express = require('express');
-const jwt = require('jsonwebtoken');
 const { Database } = require('./database/client');
 const { Migrator } = require('./database/migrator');
 const { UserController } = require('./controller/user_controller');
@@ -36,7 +35,7 @@ app.post('/change_password', async (req, res) => {
 });
 
 // show bearer token, if valid return 200, else, return 403
-app.post('/verify_login', async (req, res) => {
+app.get('/verify_login', async (req, res) => {
     UserController.validate_user(req, res);
 });
 

@@ -32,7 +32,7 @@ class UserController {
       return res.status(403).end();
     }
     const token = await Token.create(user);
-    res.json(token);
+    res.status(201).json(token);
   }
 
   static async change_password(req, res) {
@@ -73,8 +73,6 @@ class UserController {
     res.json(user);
   }
 
-  static async delete() {}
-
   static async login(req, res) {
     const { login, password } = req.body;
     if (!login) {
@@ -101,8 +99,8 @@ class UserController {
     if (!token) {
       return res.status(403).end();
     }
-    token.delete();
-    res.status(201).end();
+    await token.delete();
+    res.status(204).end();
   }
 
   static async logout_all(req, res) {
@@ -112,17 +110,20 @@ class UserController {
       return res.status(403).end();
     }
     Token.delete_all_by_user_id(token.user.id);
-    res.status(201).end();
+    res.status(204).end();
   }
 
   static async validate_user(req, res) {
     const { authorization } = req.headers;
+    console.log(authorization);
     const token = await Token.find_by_token(authorization);
     if (!token) {
       return res.status(403).end();
     }
-    res.status(201).end();
+    res.status(200).end();
   }
+
+  static async delete() {}
 }
 
 exports.UserController = UserController;

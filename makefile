@@ -52,8 +52,8 @@ up: build
 	sleep 10
 	./scripts/create_databases.sh
 
-setup:	up
-	bundle exec dotenv rake db:migrate
+test:
+	pytest ./tests/*/*.py
 
 down:
 	docker-compose stop
@@ -62,12 +62,14 @@ down:
 clean: down
 	docker kill $(docker ps -q) || echo "return 0"
 	docker rm $(docker ps -a -q) || echo "return 0"
+	docker image prune
+	docker builder prune
 	docker system prune
 
 frontend-shell:
 	docker exec -it frontend bash
 
-auth-gateway-shell:
+auth_gateway-shell:
 	docker exec -it auth_gateway bash
 
 backend-shell:

@@ -35,7 +35,7 @@ class User {
             return null;
         }
         const row = rows[0];
-        return new User(row.id, row.login, row.salt, row.pw_hash, row.firstName, row.lastName);
+        return new User(row.id, row.login, row.salt, row.pw_hash, row.first_name, row.last_name);
     }
 
     static async find_by_login(login) {
@@ -44,8 +44,9 @@ class User {
             return null;
         }
         const row = rows[0];
-        return new User(row.id, row.login, row.salt, row.pw_hash, row.firstName, row.lastName);
+        return new User(row.id, row.login, row.salt, row.pw_hash, row.first_name, row.last_name);
     }
+
     static async create({ login, password, firstName, lastName }) {
         const salt = await new Promise((resolve, reject) => {
             bcrypt.genSalt(10, (err, salt) => {
