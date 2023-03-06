@@ -14,16 +14,20 @@ app.get("/wallet", (req, res) => {
   WalletController.show(req, res);
 });
 
+app.post("wallet", (req, res) => {
+  WalletController.create(req, res);
+});
+
 app.get("/transactions", (req, res) => {
- WalletController.check_transaction(req, res);
+  WalletController.check_transaction(req, res);
 });
 
 app.post("/transactions", (req, res) => {
- WalletController.do_transaction(req, res);
+  WalletController.do_transaction(req, res);
 });
 
 app.post("/redeem", (req, res) => {
- WalletController.redeem_tokens(req, res);
+  WalletController.redeem_tokens(req, res);
 });
 
 app.listen("8082", () => {
