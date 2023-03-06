@@ -2,7 +2,11 @@ const { Listing } = require("../model/listing");
 
 class ListingController {
   static async index(req, res) {
-    const name_filters = req.params.search;
+    const name_filters = req.query.search;
+    if (!name_filters) {
+      res.statusMessage = "No search query provided";
+      return res.status(400).end();
+    }
     const listings = await Listing.find_all_by_name(name_filters);
     res.json({ listings: listings });
   }
@@ -46,6 +50,11 @@ class ListingController {
       res.statusMessage = `failed to provide the following arguments [${missing_args_string}]`;
       return res.status(400).end();
     }
+
+    if (!["normal", "dutch"].includes(type)) {
+      res.statusMessage = `parameter 'type' must be either 'normal' or 'dutch'`;
+      return res.status(400).end();
+    }
     var listing;
     try {
       listing = await Listing.create({
@@ -63,16 +72,22 @@ class ListingController {
       }
       return res.status(500).end();
     }
-    res.json(listing);
+    res.status(201).json(listing);
   }
 
   static async update(req, res) {
     const {
       user,
-      body: { listing_id },
+      body: { name, description, type, start_date, end_date, image },
     } = req.body;
+
+    const { listing_id } = req.params;
     if (!listing_id) {
       res.statusMessage = "must specify an id";
+      return res.status(400).end();
+    }
+    if (type && !["normal", "dutch"].includes(type)) {
+      res.statusMessage = `parameter 'type' must be either 'normal' or 'dutch'`;
       return res.status(400).end();
     }
     const listing = await Listing.find_by_id(listing_id);
@@ -80,7 +95,14 @@ class ListingController {
       res.statusMessage = "you must be the owner to update the listing";
       return res.status(403).end();
     }
-    await listing.update(req.id);
+    await listing.update({
+      name,
+      description,
+      type,
+      start_date,
+      end_date,
+      image,
+    });
     res.json(listing);
   }
 

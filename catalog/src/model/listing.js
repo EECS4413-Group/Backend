@@ -18,7 +18,7 @@ class Listing {
       `CREATE TABLE IF NOT EXISTS listings (
             id UUID NOT NULL UNIQUE,
             owner_id UUID NOT NULL,
-            name VARCHAR(128) NOT NULL PRIMARY KEY,
+            name VARCHAR(128) NOT NULL,
             description VARCHAR(256),
             type VARCHAR(32),
             start_date TIMESTAMP,
@@ -51,8 +51,8 @@ class Listing {
 
   static async find_all_by_name(query) {
     const rows = (
-      await Database.execute("SELECT * FROM users WHERE name LIKE %$1%", [
-        query,
+      await Database.execute(`SELECT * FROM listings WHERE name LIKE $1`, [
+        `%${query}%`,
       ])
     ).rows;
     if (rows.length == 0) {
@@ -70,7 +70,14 @@ class Listing {
       );
     });
   }
-  static async create({ owner_id, name, description, type, start_date, end_date }) {
+  static async create({
+    owner_id,
+    name,
+    description,
+    type,
+    start_date,
+    end_date,
+  }) {
     const listing_id = uuid();
     const row = (
       await Database.execute(
@@ -99,7 +106,7 @@ class Listing {
             type = $3,
             start_date = $4,
             end_date = $5,
-            image = $6,
+            image = $6
             WHERE id=$7 RETURNING *`,
         [
           name ? name : this.name,

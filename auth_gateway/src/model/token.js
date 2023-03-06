@@ -5,7 +5,7 @@ const crypto = require("crypto");
 const bcrypt = require("bcrypt");
 
 // fix this value to get deterministic hashing from bcrypt
-const SALTING_TOKEN = "$2b$10$pN/l6QR5iffLFOX8VL8nUe";
+const SALTING_CONSTANT = "$2b$10$pN/l6QR5iffLFOX8VL8nUe";
 
 class Token {
   constructor(token, user) {
@@ -25,15 +25,17 @@ class Token {
   }
 
   static async find_by_token(token) {
+    if (token == null) {
+      return null;
+    }
     const hashedToken = await new Promise((resolve, reject) => {
-      bcrypt.hash(token, SALTING_TOKEN, (err, hash) => {
+      bcrypt.hash(token, SALTING_CONSTANT, (err, hash) => {
         if (err) {
           reject(err);
         }
         resolve(hash);
       });
     });
-    console.log(hashedToken);
     const row = (
       await Database.execute("SELECT * FROM tokens WHERE token = $1 LIMIT 1", [
         hashedToken,
@@ -60,7 +62,7 @@ class Token {
       });
     });
     const hashedToken = await new Promise((resolve, reject) => {
-      bcrypt.hash(newToken, SALTING_TOKEN, (err, hash) => {
+      bcrypt.hash(newToken, SALTING_CONSTANT, (err, hash) => {
         if (err) {
           reject(err);
         }

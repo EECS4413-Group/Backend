@@ -26,6 +26,10 @@ app.post("/listing/:listing_id", (req, res) => {
   ListingController.update(req, res);
 });
 
+app.use("*", (req, res) => {
+  res.status(404).end();
+});
+
 app.listen("8083", () => {
   console.log("listening on port 8083");
 });

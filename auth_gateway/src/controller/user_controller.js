@@ -115,7 +115,6 @@ class UserController {
 
   static async validate_user(req, res) {
     const { authorization } = req.headers;
-    console.log(authorization);
     const token = await Token.find_by_token(authorization);
     if (!token) {
       return res.status(403).end();
