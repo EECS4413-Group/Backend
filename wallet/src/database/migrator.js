@@ -1,8 +1,21 @@
 const { Wallet } = require("./../model/wallet");
+const { Transaction } = require("./../model/transaction");
 
 class Migrator {
   static async migrateAll() {
-    Wallet.migrate();
+    var initialized = false;
+    while (!initialized) {
+      try {
+        await Wallet.migrate();
+        await Transaction.migrate();
+        initialized = true;
+        console.log("Migrated successfully");
+      } catch (e) {
+        console.log(e);
+        await new Promise((r) => setTimeout(r, 2000));
+        console.log("retrying in 2 seconds");
+      }
+    }
   }
 }
 

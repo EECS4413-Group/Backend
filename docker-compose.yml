@@ -71,8 +71,11 @@ services:
         expose:
             - "8082"
         environment:
-            NAME: wallet
-        command: tail -F anything
+            PGUSER: ${POSTGRES_USER}
+            PGPASSWORD: ${POSTGRES_PASSWORD}
+            PGDATABASE: ${WALLET_PGDATABASE}
+            PGHOST: psg
+        command: npm start
         volumes:
             - "./wallet:/app"
         depends_on:

@@ -10,7 +10,7 @@ Migrator.migrateAll();
 const app = express();
 app.use(express.json());
 
-app.get("/wallet", (req, res) => {
+app.get("/wallet/:wallet_id", (req, res) => {
   WalletController.show(req, res);
 });
 
@@ -28,6 +28,10 @@ app.post("/transactions", (req, res) => {
 
 app.post("/redeem", (req, res) => {
   WalletController.redeem_tokens(req, res);
+});
+
+app.use("*", (req, res) => {
+  res.status(404).end();
 });
 
 app.listen("8082", () => {

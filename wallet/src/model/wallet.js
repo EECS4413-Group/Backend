@@ -10,13 +10,13 @@ class Wallet {
     this.last_redeem_time = last_redeem_time;
   }
 
-  static async migrate() {
-    Database.execute(
+  static migrate() {
+    return Database.execute(
       `CREATE TABLE IF NOT EXISTS wallets (
             id UUID NOT NULL UNIQUE,
             owner_id UUID NOT NULL,
             balance INTEGER,
-            last_redeem_time DATETIME
+            last_redeem_time TIMESTAMP
         )`
     );
   }

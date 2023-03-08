@@ -12,15 +12,15 @@ class Transaction {
     this.transaction_time = transaction_time;
   }
 
-  static async migrate() {
-    Database.execute(
+  static migrate() {
+    return Database.execute(
       `CREATE TABLE IF NOT EXISTS transactions (
             id UUID NOT NULL UNIQUE,
             reciever_id UUID NOT NULL,
             sender_id UUID,
             type VARCHAR(32),
             amount INTEGER,
-            transaction_time DATETIME
+            transaction_time TIMESTAMP
         )`
     );
   }

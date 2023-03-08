@@ -74,6 +74,10 @@ def test_verify_login():
     response = create_user(login, 'password', 'fname', 'lname')
     token = json.loads(response.content)['token']
     response = requests.get(
+        f'http://{API}/verify_login',
+    )
+    assert response.status_code == 403
+    response = requests.get(
         f'http://{API}/verify_login', headers={"authorization": token}
     )
     assert response.status_code == 200

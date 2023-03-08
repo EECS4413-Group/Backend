@@ -13,8 +13,8 @@ class Listing {
     this.end_date = end_date;
   }
 
-  static async migrate() {
-    Database.execute(
+  static migrate() {
+    return Database.execute(
       `CREATE TABLE IF NOT EXISTS listings (
             id UUID NOT NULL UNIQUE,
             owner_id UUID NOT NULL,

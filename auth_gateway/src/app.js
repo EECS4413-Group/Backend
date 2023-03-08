@@ -49,14 +49,52 @@ app.post("/change_user_info", async (req, res) => {
 app.use(
   "/catalog",
   proxy("catalog:8083", {
+    proxyReqBodyDecorator: (bodyContent, srcReq) => {
+      return new Promise((resolve, reject) => {
+        Token.find_by_token(srcReq.headers.authorization).then((token) => {
+          if (token == null) {
+            reject(null);
+            return;
+          }
+          resolve({ body: bodyContent, user: token.user });
+        });
+      });
+    },
+    filter: (req, res) => {
+      return new Promise((resolve, reject) => {
+        Token.find_by_token(req.headers.authorization).then((token) => {
+          resolve(token != null);
+        });
+      });
+    },
+  })
+);
+
+app.use(
+  "/wallet",
+  proxy("wallet:8082", {
     proxyReqPathResolver: (req) => {
-      return req.url.replace("/catalog", "");
+      // all get requests need to be decorated with user id
+      // this prevents other users from accessing a users wallet
+      if (req.method != "GET") {
+        return req.url;
+      }
+      return new Promise((resolve, reject) => {
+        Token.find_by_token(req.headers.authorization).then((token) => {
+          if (token == null) {
+            reject(null);
+            return;
+          }
+          resolve(`req.url?${token.user.id}`);
+        });
+      });
     },
     proxyReqBodyDecorator: (bodyContent, srcReq) => {
       return new Promise((resolve, reject) => {
         Token.find_by_token(srcReq.headers.authorization).then((token) => {
           if (token == null) {
             reject(null);
+            return;
           }
           resolve({ body: bodyContent, user: token.user });
         });

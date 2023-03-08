@@ -2,11 +2,21 @@ const { User } = require("./../model/user");
 const { Token } = require("./../model/token");
 
 class Migrator {
-    static async migrateAll() {
-        User.migrate();
-        Token.migrate();
-
+  static async migrateAll() {
+    var initialized = false;
+    while (!initialized) {
+      try {
+        await User.migrate();
+        await Token.migrate();
+        initialized = true;
+        console.log("Migrated successfully");
+      } catch (e) {
+        console.log(e);
+        await new Promise((r) => setTimeout(r, 2000));
+        console.log("retrying in 2 seconds");
+      }
     }
+  }
 }
 
 exports.Migrator = Migrator;

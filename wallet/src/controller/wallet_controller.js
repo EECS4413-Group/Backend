@@ -4,6 +4,9 @@ const { Transaction } = require("../model/transaction");
 class WalletController {
   static async show(req, res) {
     const wallet_id = req.params.wallet_id;
+    if (!wallet_id) {
+      return res.status(500).end();
+    }
     const wallet = await Wallet.find_by_id(wallet_id);
     if (!wallet) {
       res.statusMessage = `wallet with id: ${wallet_id} does not exist`;
@@ -13,6 +16,7 @@ class WalletController {
   }
 
   static async create(req, res) {
+    console.log("here");
     const { user } = req.body;
     var wallet;
     try {
@@ -97,7 +101,7 @@ class WalletController {
   static async redeem_tokens(req, res) {
     // FIXED CONSTANT, SHOULD BE LOADED FROM ENVIRONMENT
     const TOKENS_PER_REDMPTION = 4000;
-    const MS_PER_MINUTES = 60000; 
+    const MS_PER_MINUTES = 60000;
     const TIME_BETWEEN_REDEEMS = 60 * 24 * MS_PER_MINUTES;
 
     const { user } = req.body;

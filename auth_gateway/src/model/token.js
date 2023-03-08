@@ -13,8 +13,8 @@ class Token {
     this.user = user;
   }
 
-  static async migrate() {
-    await Database.execute(
+  static migrate() {
+    return Database.execute(
       `CREATE TABLE IF NOT EXISTS tokens (
                 token VARCHAR(256) NOT NULL UNIQUE PRIMARY KEY,
                 user_id UUID
@@ -32,6 +32,7 @@ class Token {
       bcrypt.hash(token, SALTING_CONSTANT, (err, hash) => {
         if (err) {
           reject(err);
+          return;
         }
         resolve(hash);
       });
@@ -57,6 +58,7 @@ class Token {
       crypto.randomBytes(128, (err, buffer) => {
         if (err) {
           reject(err);
+          return;
         }
         resolve(buffer.toString("hex"));
       });
@@ -65,6 +67,7 @@ class Token {
       bcrypt.hash(newToken, SALTING_CONSTANT, (err, hash) => {
         if (err) {
           reject(err);
+          return;
         }
         resolve(hash);
       });

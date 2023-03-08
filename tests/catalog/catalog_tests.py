@@ -171,3 +171,8 @@ def test_getting_listings_by_filter():
 
     for i in range(5):
         assert any([x['name'] == f'foo{i}' for x in body['listings']])
+
+
+def test_uploading_image():
+    # TODO
+    return

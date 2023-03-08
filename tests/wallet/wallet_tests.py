@@ -31,7 +31,13 @@ def create_user(login, password, first_name, last_name):
 
 # ======================== TESTS START HERE ======================
 def test_wallet_created_on_account_creation():
-    return
+    login = f'user_{random_string(5)}'
+    response = create_user(login, 'password', 'fname', 'lname')
+    token = json.loads(response.content)['token']
+
+    response = requests.get(f'http://{API}/wallet/wallet', headers={"authorization": token})
+    print(response.content)
+    assert False
 
 
 def test_check_balance():
