@@ -47,13 +47,14 @@ services:
         build: .
         image: marketplace
         container_name: marketplace
-        # ports:
-        #     - "8081:8081"
         expose:
             - "8081"
         environment:
-            NAME: marketplace
-        command: tail -F anything
+            PGUSER: ${POSTGRES_USER}
+            PGPASSWORD: ${POSTGRES_PASSWORD}
+            PGDATABASE: ${MARKETPLACE_PGDATABASE}
+            PGHOST: psg
+        command: npm start
         volumes:
             - "./marketplace:/app"
         depends_on:
@@ -103,6 +104,27 @@ services:
             - db
         links:
             - db
+
+    shipping:
+        build: .
+        image: shipping
+        container_name: shipping
+        expose:
+            - "8084"
+        environment:
+            PGUSER: ${POSTGRES_USER}
+            PGPASSWORD: ${POSTGRES_PASSWORD}
+            PGDATABASE: ${SHIPPING_PGDATABASE}
+            PGHOST: psg
+        command: npm start
+        volumes:
+            - "./shipping:/app"
+        depends_on:
+            - db
+            - catalog
+        links:
+            - db
+            - catalog
 
     auction_daemon:
         build: .

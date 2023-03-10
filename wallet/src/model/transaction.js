@@ -27,9 +27,10 @@ class Transaction {
 
   static async find_all_by_reciever_id(reciever_id) {
     const rows = (
-      await Database.execute("SELECT * FROM wallets WHERE reciever_id = $1", [
-        reciever_id,
-      ])
+      await Database.execute(
+        "SELECT * FROM transactions WHERE reciever_id = $1",
+        [reciever_id]
+      )
     ).rows;
     if (rows.length == 0) {
       return null;
@@ -50,7 +51,7 @@ class Transaction {
     const transaction_id = uuid();
     const row = (
       await Database.execute(
-        `INSERT INTO wallets (id, reciever_id, sender_id, type, amount, transaction_time)
+        `INSERT INTO transactions (id, reciever_id, sender_id, type, amount, transaction_time)
             VALUES ($1, $2, $3, $4, $5, to_timestamp(${Date(
               0
             )} / 1000.0)) RETURNING *`,

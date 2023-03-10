@@ -15,6 +15,8 @@ help:
 	@ echo "	catalog-shell: interaction shell for the catalog container"
 	@ echo "	marketplace-shell: interaction shell for the marketplace container"
 	@ echo "	wallet-shell: interaction shell for the wallet container"
+	@ echo "	shipping-shell: interaction shell for the shippinh container"
+
 
 
 build:
@@ -24,6 +26,7 @@ build:
 	docker build -t 'catalog' ./catalog
 	docker build -t 'marketplace' ./marketplace
 	docker build -t 'wallet' ./wallet
+	docker build -t 'shipping' ./shipping
 
 build-frontend-dev:
 	npm install  --prefix ./frontend
@@ -45,7 +48,10 @@ build-marketplace-dev:
 build-wallet-dev:
 	docker build -t 'wallet' ./wallet
 
-build-dev: build-auth_gateway-dev build-frontend-dev build-auction_daemon-dev build-catalog-dev build-marketplace-dev build-wallet-dev
+build-shipping-dev:
+	docker build -t 'shipping' ./shipping
+
+build-dev: build-auth_gateway-dev build-frontend-dev build-auction_daemon-dev build-catalog-dev build-marketplace-dev build-wallet-dev build-shipping-dev
 
 up: build
 	docker-compose up -d #> /dev/null
@@ -86,4 +92,7 @@ marketplace-shell:
 
 wallet-shell:
 	docker exec -it wallet bash
+
+shipping-shell:
+	docker exec -it shipping bash
 

@@ -26,7 +26,7 @@ class WalletController {
     } catch (e) {
       if (e.message.includes("duplicate")) {
         // 1 in a trillion chance that there is UUID collision
-        res.statusMessage = `Listing already exists with UUID, please retry request`;
+        res.statusMessage = `Account already exists with UUID, please retry request`;
       }
       console.log(e);
       return res.status(500).end();
