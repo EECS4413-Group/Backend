@@ -1,5 +1,4 @@
 const express = require("express");
-const jwt = require("jsonwebtoken");
 const { Database } = require("./database/client");
 const { Migrator } = require("./database/migrator");
 const { WalletController } = require("./controller/wallet_controller");
@@ -10,23 +9,23 @@ Migrator.migrateAll();
 const app = express();
 app.use(express.json());
 
-app.get("/wallet/:wallet_id", (req, res) => {
+app.get("/account/:account_id", (req, res) => {
   WalletController.show(req, res);
 });
 
-app.post("wallet", (req, res) => {
+app.post("/account", (req, res) => {
   WalletController.create(req, res);
 });
 
-app.get("/transactions", (req, res) => {
+app.get("/transaction", (req, res) => {
   WalletController.check_transaction(req, res);
 });
 
-app.post("/transactions", (req, res) => {
+app.post("/transaction", (req, res) => {
   WalletController.do_transaction(req, res);
 });
 
-app.post("/redeem", (req, res) => {
+app.get("/redeem/:account_id", (req, res) => {
   WalletController.redeem_tokens(req, res);
 });
 

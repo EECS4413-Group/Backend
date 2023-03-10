@@ -1,4 +1,4 @@
-const { fetch } = require("node-fetch");
+const fetch = require("node-fetch");
 
 const { User } = require("./../model/user");
 const { Token } = require("./../model/token");
@@ -36,20 +36,12 @@ class UserController {
     }
     var response;
     try {
-      response = await new Promise((resolve, reject) => {
-        fetch("http://wallet:8082/wallet", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ user: user }),
-        })
-          .then((res) => {
-            resolve(res);
-          })
-          .catch((e) => {
-            reject(e);
-          });
+      response = await fetch("http://wallet:8082/account", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ user: user }),
       });
     } catch (e) {
       console.log(e);

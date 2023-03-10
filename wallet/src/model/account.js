@@ -2,7 +2,7 @@ const { Database } = require("../database/client");
 
 const uuid = require("uuid").v4;
 
-class Wallet {
+class Account {
   constructor(id, owner_id, balance, last_redeem_time) {
     this.id = id;
     this.owner_id = owner_id;
@@ -12,7 +12,7 @@ class Wallet {
 
   static migrate() {
     return Database.execute(
-      `CREATE TABLE IF NOT EXISTS wallets (
+      `CREATE TABLE IF NOT EXISTS accounts (
             id UUID NOT NULL UNIQUE,
             owner_id UUID NOT NULL,
             balance INTEGER,
@@ -24,7 +24,7 @@ class Wallet {
   static async find_by_owner_id(owner_id) {
     const rows = (
       await Database.execute(
-        "SELECT * FROM wallets WHERE owner_id = $1 LIMIT 1",
+        "SELECT * FROM accounts WHERE owner_id = $1 LIMIT 1",
         [owner_id]
       )
     ).rows;
@@ -32,41 +32,44 @@ class Wallet {
       return null;
     }
     const row = rows[0];
-    return new Wallet(row.id, row.owner_id, row.balance, row.last_redeem_time);
+
+    return new Account(row.id, row.owner_id, row.balance, row.last_redeem_time);
   }
 
   static async create(user_id) {
     const wallet_id = uuid();
     const row = (
       await Database.execute(
-        `INSERT INTO wallets (id, owner_id, balance, last_redeem_time)
-            VALUES ($1, $2, $3, to_timestamp(${Date(0)} / 1000.0)) RETURNING *`,
+        `INSERT INTO accounts (id, owner_id, balance, last_redeem_time)
+            VALUES ($1, $2, $3, to_timestamp('${new Date(
+              0
+            ).toISOString()}', 'YYYY-MM-DDTHH:MI:SS.MSZ')) RETURNING *`,
         [wallet_id, user_id, 0]
       )
     ).rows[0];
-    return new Wallet(
+    return new Account(
       row.id,
       row.listing_id,
       row.balance,
-      Date(row.last_redeem_time * 1000)
+      new Date(row.last_redeem_time * 1000)
     );
   }
 
   async update({ balance, last_redeem_time }) {
     const newRow = (
       await Database.execute(
-        `UPDATE wallets SET
+        `UPDATE accounts SET
             balance=$1,
-            last_redeem_time=to_timestamp(${redeem_time} / 1000.0),
-            WHERE id=$3 RETURNING *`,
-        [balance, last_redeem_time, this.id]
+            last_redeem_time=to_timestamp('${last_redeem_time.toISOString()}', 'YYYY-MM-DDTHH:MI:SS.MSZ')
+            WHERE id=$2 RETURNING *`,
+        [balance, this.id]
       )
     ).rows[0];
     this.balance = newRow.balance;
-    this.last_redeem_time = Date(newRow.last_redeem_time * 1000);
+    this.last_redeem_time = new Date(newRow.last_redeem_time * 1000);
   }
 
   delete() {}
 }
 
-exports.Wallet = Wallet;
+exports.Account = Account;

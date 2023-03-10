@@ -14,7 +14,9 @@ class Database {
         console.log("connected successfully!");
         initialized = true;
       } catch (e) {
-        console.log(e);
+        console.log(
+          "failed to initialize db connection, retrying in 2 seconds"
+        );
         await new Promise((r) => setTimeout(r, 2000));
         console.log("retrying");
       }

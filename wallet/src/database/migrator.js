@@ -1,4 +1,4 @@
-const { Wallet } = require("./../model/wallet");
+const { Account } = require("../model/account");
 const { Transaction } = require("./../model/transaction");
 
 class Migrator {
@@ -6,12 +6,12 @@ class Migrator {
     var initialized = false;
     while (!initialized) {
       try {
-        await Wallet.migrate();
+        await Account.migrate();
         await Transaction.migrate();
         initialized = true;
         console.log("Migrated successfully");
       } catch (e) {
-        console.log(e);
+        console.log("failed to migrate models, retrying in 2 seconds");
         await new Promise((r) => setTimeout(r, 2000));
         console.log("retrying in 2 seconds");
       }

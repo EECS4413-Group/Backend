@@ -11,7 +11,7 @@ class Migrator {
         initialized = true;
         console.log("Migrated successfully");
       } catch (e) {
-        console.log(e);
+        console.log("failed to migrate models, retrying in 2 seconds");
         await new Promise((r) => setTimeout(r, 2000));
         console.log("retrying in 2 seconds");
       }

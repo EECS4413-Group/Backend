@@ -38,6 +38,7 @@ class ListingController {
       missing_values.push("type");
     }
     if (!start_date) {
+      // TODO: start date should be 10 minutes prior to time.now() or after
       missing_values.push("start_date");
     }
     if (!end_date) {

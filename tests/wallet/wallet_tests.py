@@ -3,6 +3,7 @@ import json
 import random
 from dotenv import load_dotenv
 import os
+import datetime
 
 
 load_dotenv()
@@ -35,14 +36,39 @@ def test_wallet_created_on_account_creation():
     response = create_user(login, 'password', 'fname', 'lname')
     token = json.loads(response.content)['token']
 
-    response = requests.get(f'http://{API}/wallet/wallet', headers={"authorization": token})
-    print(response.content)
-    assert False
+    response = requests.get(f'http://{API}/wallet/account', headers={"authorization": token})
+    assert response.status_code == 200
 
-
-def test_check_balance():
-    return
+    body = json.loads(response.content)
+    assert body['balance'] == 0
+    assert body['last_redeem_time'] == datetime.datetime(
+        1970, 1, 1).replace(
+        tzinfo=datetime.timezone.utc).isoformat().replace(
+        '+00:00', '.000Z')
 
 
 def test_redeem():
-    return
+    login = f'user_{random_string(5)}'
+    response = create_user(login, 'password', 'fname', 'lname')
+    token = json.loads(response.content)['token']
+
+    response = requests.get(f'http://{API}/wallet/account', headers={"authorization": token})
+    assert response.status_code == 200
+
+    # assert empty wallet on account creation
+    body = json.loads(response.content)
+    assert body['balance'] == 0
+    assert body['last_redeem_time'] == datetime.datetime(
+        1970, 1, 1).replace(
+        tzinfo=datetime.timezone.utc).isoformat().replace(
+        '+00:00', '.000Z')
+
+    response = requests.get(f'http://{API}/wallet/redeem', headers={"authorization": token}, json={})
+    assert response.status_code == 200
+
+    response = requests.get(f'http://{API}/wallet/account', headers={"authorization": token})
+    assert response.status_code == 200
+    body = json.loads(response.content)
+    assert body['balance'] == 4000
+    assert datetime.datetime.strptime(
+        body['last_redeem_time'], "%Y-%m-%dT%H:%M:%S.%fZ") > datetime.datetime.now() - datetime.timedelta(minutes=5)
