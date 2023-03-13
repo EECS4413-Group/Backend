@@ -48,6 +48,10 @@ class BidController {
 
     const current_listing = await get_listing(bid.listing_id);
     if (current_listing.type == "normal") {
+      if (Date.now() > new Date(current_listing.end_time).getTime()) {
+        res.statusMessage = `Auction over. Your bid cannot be placed`;
+        res.status(403).end();
+      }
       const current_top_bid = await Bid.find_highest_for_listing(
         bid.listing_id
       );
@@ -75,6 +79,11 @@ class BidController {
         res.statusMessage = `Item has been purchased already`;
         return res.status(403).end();
       }
+
+      // TODO: check if price provided by user equal to calculated price based on time increment rules
+      // if yes, bid can be created.
+      // else if bid is higher than time increment rule, create bid
+      // otherwise return 403
       var new_bid;
       try {
         new_bid = await Bid.create({ ...bid });

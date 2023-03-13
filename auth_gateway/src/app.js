@@ -113,6 +113,30 @@ app.use(
   })
 );
 
+app.use(
+  "/catalog",
+  proxy("catalog:8083", {
+    proxyReqBodyDecorator: (bodyContent, srcReq) => {
+      return new Promise((resolve, reject) => {
+        Token.find_by_token(srcReq.headers.authorization).then((token) => {
+          if (token == null) {
+            reject(null);
+            return;
+          }
+          resolve({ body: bodyContent, user: token.user });
+        });
+      });
+    },
+    filter: (req, res) => {
+      return new Promise((resolve, reject) => {
+        Token.find_by_token(req.headers.authorization).then((token) => {
+          resolve(token != null);
+        });
+      });
+    },
+  })
+);
+
 app.use((req, res) => {
   res.status(403).end();
 });
