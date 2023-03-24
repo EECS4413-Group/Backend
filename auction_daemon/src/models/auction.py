@@ -1,3 +1,4 @@
+from datetime import datetime
 
 
 class Auction():
@@ -10,7 +11,7 @@ class Auction():
         self.description = listing.get("description", None)
         self.type = listing.get("type", None)
         self.start_date = listing.get("start_date", None)
-        self.end_date = listing.get("end_date", None)
+        self.end_date = datetime.strptime(listing.get("end_date", None))
 
     def end(self):
         return

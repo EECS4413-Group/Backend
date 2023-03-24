@@ -1,7 +1,9 @@
+from api import api
 
 
 def main():
-    return
+    while (True):
+        listings = api.get_expiring_listings()
 
 
 if __name__ == "__main__":
