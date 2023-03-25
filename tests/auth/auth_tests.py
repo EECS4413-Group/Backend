@@ -174,7 +174,7 @@ def test_change_password():
     assert response.status_code == 200
 
 
-def change_username():
+def _change_user_name():
     # create user
     login = f'user_{random_string(5)}'
     response = create_user(login, 'password', 'fname', 'lname')

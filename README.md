@@ -46,4 +46,9 @@ Within each directory should exist an independent api, which performs a specific
 | [Auction Daemon](auction_daemon/) | Listens to active bids and closes them when needed |  Python3 | `/auction/*` | Finished, needs tests |
 | [Shipping](shipping/) | Lets users confirm orders and specify shipping location | Express.js  | `/shipping/*`| Finished, needs tests |
 
+## TESTS
+While it would be fantastic for the software to work without ever creating bugs, as it turns out, almost every line of code somehow contained a bug upon first writing each microservice. Luckily, we had the forsight to address these issues, and we decided to implement a very large amount of tests to verify everything works as it should.
+
+These tests where written using `python3` and the pytest library. Instead of implementing unit tests and trying to make rediculously over tested code, we decided to simply create a bunch of api end-to-end tests which would validate that each of the required use cases and workflows performed what was expected of them. As such, if you navigate to [TESTS](/tests), you will find a detailed explanation of each and every test that was implemented.
+
 
