@@ -11,7 +11,8 @@ class Auction():
         self.description = listing.get("description", None)
         self.type = listing.get("type", None)
         self.start_date = listing.get("start_date", None)
-        self.end_date = datetime.strptime(listing.get("end_date", None))
+        self.end_date = datetime.strptime(listing.get(
+            "end_date", None), "%Y-%m-%dT%H:%M:%S.%fZ") if listing.get("end_date", None) else None
 
     def end(self):
         return

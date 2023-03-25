@@ -23,11 +23,13 @@ const get_listing = async (listing_id) => {
 
 class BidController {
   static async show(req, res) {
+    console.log(req.params);
     const listing_id = req.params.listing_id;
     if (!listing_id) {
       return res.status(500).end();
     }
     const bid = await Bid.find_highest_for_listing(listing_id);
+    console.log(bid);
     if (!bid) {
       res.statusMessage = `no bids for listing with id ${listing_id}`;
       return res.status(404).end();
@@ -79,7 +81,6 @@ class BidController {
       const current_top_bid = await Bid.find_highest_for_listing(
         bid.listing_id
       );
-      console.log(current_top_bid);
       if (current_top_bid != null) {
         res.statusMessage = `Item has been purchased already`;
         return res.status(403).end();

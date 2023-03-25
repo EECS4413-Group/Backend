@@ -3,6 +3,7 @@ import pause
 import time
 from datetime import datetime
 from datetime import timedelta
+import traceback
 
 
 def winner_tasks(listing):
@@ -16,20 +17,21 @@ def winner_tasks(listing):
 
 
 def main():
+    time.sleep(30)
     while (True):
         try:
             print("started")
-            end = datetime.now() + timedelta(minutes=5)
+            end = datetime.now() + timedelta(seconds=5)
             listings = api.get_expiring_listings()
-            listings.sort(key=lambda x: datetime.strptime(x.end_date))
+            listings.sort(key=lambda x: x.end_date)
             for listing in listings:
-                pause.until(datetime.strptime(listing.end_date))
+                pause.until(listing.end_date)
                 winner_tasks(listing)
-            print("finished")
             pause.until(end)
+            print("finished")
         except Exception as e:
-            print(e)
-            time.sleep(30)
+            print(traceback.format_exc())
+            time.sleep(5)
 
 
 if __name__ == "__main__":

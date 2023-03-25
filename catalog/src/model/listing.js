@@ -62,15 +62,11 @@ class Listing {
   }
 
   static async find_all_ending_soon() {
-    const rows = await Database.execute(
-      `Select * From listings WHERE type = "normal" AND (end_date BETWEEN NOW() AND NOW() + INTERVAL '5 minutes')`
-    ).rows;
+    const result = await Database.execute(
+      `Select * From listings WHERE type LIKE 'normal' AND end_date BETWEEN LOCALTIMESTAMP AND LOCALTIMESTAMP + INTERVAL '5 seconds'`
+    );
 
-    if (rows.length == 0) {
-      return null;
-    }
-
-    return rows.map((row) => {
+    return result.rows.map((row) => {
       return new Listing(
         row.id,
         row.owner_id,

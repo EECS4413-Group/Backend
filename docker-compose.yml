@@ -35,13 +35,12 @@ services:
         volumes:
             - "./auth_gateway:/app"
         depends_on:
-            - auction_daemon
             - db
-            - marketplace
         links:
-            - auction_daemon
-            - db
+            - catalog
             - marketplace
+            - shipping
+            - wallet
 
     marketplace:
         build: .
@@ -58,12 +57,9 @@ services:
         volumes:
             - "./marketplace:/app"
         depends_on:
-            - catalog
             - db
-            - wallet
         links:
             - catalog
-            - db
             - wallet
 
 
@@ -83,8 +79,6 @@ services:
             - "./wallet:/app"
         depends_on:
             - db
-        links:
-            - db
 
     catalog:
         build: .
@@ -101,8 +95,6 @@ services:
         volumes:
             - "./catalog:/app"
         depends_on:
-            - db
-        links:
             - db
 
     shipping:
@@ -121,10 +113,6 @@ services:
             - "./shipping:/app"
         depends_on:
             - db
-            - catalog
-        links:
-            - db
-            - catalog
 
     auction_daemon:
         build: .
@@ -140,9 +128,11 @@ services:
         volumes:
             - "./auction_daemon:/app"
         depends_on:
-            - shipping
-            - marketplace
+            - db
+        links:
             - catalog
+            - marketplace
+            - shipping
             - wallet
 
     db:
