@@ -17,6 +17,10 @@ app.post("/bid", (req, res) => {
   BidController.create(req, res);
 });
 
-app.listen("8083", () => {
-  console.log("listening on port 8083");
+app.use("*", (req, res) => {
+  res.status(404).end();
+});
+
+app.listen("8081", () => {
+  console.log("listening on port 8081");
 });

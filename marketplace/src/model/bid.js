@@ -24,7 +24,7 @@ class Bid {
   static async find_highest_for_listing(listing_id) {
     const rows = (
       await Database.execute(
-        "SELECT MAX(amount) FROM bids WHERE listing_id = $1 LIMIT 1",
+        "SELECT * FROM bids WHERE listing_id = $1 ORDER BY amount DESC LIMIT 1",
         [listing_id]
       )
     ).rows;
@@ -33,7 +33,7 @@ class Bid {
     }
     const row = rows[0];
 
-    return new Bid(row.bid_id, row, listing_id, row.bidder_id, row.amount);
+    return new Bid(row.id, row.listing_id, row.bidder_id, row.amount);
   }
 
   static async create({ listing_id, bidder_id, amount }) {
@@ -45,7 +45,7 @@ class Bid {
         [bid_id, listing_id, bidder_id, amount]
       )
     ).rows[0];
-    return new Bid(row.bid_id, row, listing_id, row.bidder_id, row.amount);
+    return new Bid(row.bid_id, row.listing_id, row.bidder_id, row.amount);
   }
 
   delete() {}

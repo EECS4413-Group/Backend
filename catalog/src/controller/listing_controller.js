@@ -11,6 +11,11 @@ class ListingController {
     res.json({ listings: listings });
   }
 
+  static async indexEndingSoon(req, res) {
+    const listings = await Listing.find_all_ending_soon();
+    res.json({ listings: listings });
+  }
+
   static async show(req, res) {
     const listing_id = req.params.listing_id;
     const listing = await Listing.find_by_id(listing_id);
@@ -25,7 +30,7 @@ class ListingController {
   static async create(req, res) {
     const {
       user,
-      body: { name, description, type, start_date, end_date },
+      body: { name, description, price, type, start_date, end_date },
     } = req.body;
     const missing_values = [];
     if (!name) {
@@ -62,6 +67,7 @@ class ListingController {
         owner_id: user.id,
         name,
         description,
+        price,
         type,
         start_date,
         end_date,
@@ -71,6 +77,7 @@ class ListingController {
         // 1 in a trillion chance that there is UUID collision
         res.statusMessage = `Listing already exists with UUID, please retry request`;
       }
+      console.log(e);
       return res.status(500).end();
     }
     res.status(201).json(listing);
@@ -79,7 +86,7 @@ class ListingController {
   static async update(req, res) {
     const {
       user,
-      body: { name, description, type, start_date, end_date, image },
+      body: { name, description, price, type, start_date, end_date, image },
     } = req.body;
 
     const { listing_id } = req.params;
@@ -99,6 +106,7 @@ class ListingController {
     await listing.update({
       name,
       description,
+      price,
       type,
       start_date,
       end_date,

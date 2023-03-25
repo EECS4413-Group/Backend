@@ -4,9 +4,8 @@ RUN apt update -qq
 
 WORKDIR /app
 
-# ADD pipfile pipfile
-# ADD pipfile.lock pipfile.lock
-# RUN pipenv install
+ADD requirements.txt requirements.txt
+RUN pip install -r requirements.txt
 
 ADD ./ ./
 

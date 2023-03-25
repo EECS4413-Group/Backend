@@ -71,4 +71,4 @@ def test_redeem():
     body = json.loads(response.content)
     assert body['balance'] == 4000
     assert datetime.datetime.strptime(
-        body['last_redeem_time'], "%Y-%m-%dT%H:%M:%S.%fZ") > datetime.datetime.now() - datetime.timedelta(minutes=5)
+        body['last_redeem_time'], "%Y-%m-%dT%H:%M:%S.%fZ") > (datetime.datetime.utcnow() - datetime.timedelta(minutes=5))

@@ -132,13 +132,18 @@ services:
         container_name: auction_daemon
         environment:
             NAME: auction_daemon
-        command: tail -F anything
+            CATALOG_ENDPOINT:  catalog
+            SHIPPING_ENDPOINT: shipping
+            WALLET_ENDPOINT: wallet
+            MARKETPLACE_ENDPOINT: marketplace
+        command: python -u src/main.py
         volumes:
             - "./auction_daemon:/app"
         depends_on:
-            - db
-        links:
-            - db
+            - shipping
+            - marketplace
+            - catalog
+            - wallet
 
     db:
         image: postgres:latest

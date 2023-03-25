@@ -14,6 +14,10 @@ app.get("/listing", (req, res) => {
   ListingController.index(req, res);
 });
 
+app.get("/listing/ending_soon", (req, res) => {
+  ListingController.indexEndingSoon(req, res);
+});
+
 app.get("/listing/:listing_id", (req, res) => {
   ListingController.show(req, res);
 });

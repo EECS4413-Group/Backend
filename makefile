@@ -59,7 +59,7 @@ up: build
 	./scripts/create_databases.sh
 
 test:
-	pytest ./tests/*/*.py
+	python -m pytest ./tests/*/*.py
 
 down:
 	docker-compose stop

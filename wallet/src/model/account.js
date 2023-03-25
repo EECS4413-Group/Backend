@@ -43,7 +43,7 @@ class Account {
         `INSERT INTO accounts (id, owner_id, balance, last_redeem_time)
             VALUES ($1, $2, $3, to_timestamp('${new Date(
               0
-            ).toISOString()}', 'YYYY-MM-DDTHH:MI:SS.MSZ')) RETURNING *`,
+            ).toISOString()}', 'YYYY-MM-DD"T"HH24:MI:SS.ff3"Z"')) RETURNING *`,
         [wallet_id, user_id, 0]
       )
     ).rows[0];
@@ -51,7 +51,7 @@ class Account {
       row.id,
       row.listing_id,
       row.balance,
-      new Date(row.last_redeem_time * 1000)
+      new Date(row.last_redeem_time)
     );
   }
 
@@ -60,13 +60,13 @@ class Account {
       await Database.execute(
         `UPDATE accounts SET
             balance=$1,
-            last_redeem_time=to_timestamp('${last_redeem_time.toISOString()}', 'YYYY-MM-DDTHH:MI:SS.MSZ')
+            last_redeem_time=to_timestamp('${last_redeem_time.toISOString()}', 'YYYY-MM-DD"T"HH24:MI:SS.ff3"Z"')
             WHERE id=$2 RETURNING *`,
         [balance, this.id]
       )
     ).rows[0];
     this.balance = newRow.balance;
-    this.last_redeem_time = new Date(newRow.last_redeem_time * 1000);
+    this.last_redeem_time = new Date(newRow.last_redeem_time);
   }
 
   delete() {}

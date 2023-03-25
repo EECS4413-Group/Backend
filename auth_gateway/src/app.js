@@ -114,8 +114,8 @@ app.use(
 );
 
 app.use(
-  "/catalog",
-  proxy("catalog:8083", {
+  "/marketplace",
+  proxy("marketplace:8081", {
     proxyReqBodyDecorator: (bodyContent, srcReq) => {
       return new Promise((resolve, reject) => {
         Token.find_by_token(srcReq.headers.authorization).then((token) => {
