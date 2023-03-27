@@ -25,9 +25,14 @@
 |test_bidding_on_listing| tests various interaction related to bidding on a listing. This includes bidding below the current top bid, bidding on a closed auction, and bidding conventionally |
 | test_bidding_on_listing_dutch| tests various interaction related to bidding on a dutch auction. This includes checking if the price updates after given interval, bidding on an already closed auction, and bidding above and below the amount that the auction is currently at.|
 ## SHIPPING
-TODO, still needs some work before testing can be done
+| test name | description |
+| --- | --- |
+|test_proxy_auth_works| tests if authenticated user is able to route to the shipping server|
+|test_user_can_create_default_shipping_address|Tests if a user is able to set a default shipping address|
+|test_winning_auction_creates_shipping_label_and_user_can_update_label| tests if after winning an auction the user is served with an unconfirmed shipping message. Additionally tests if a user is able to update the notification and specify which type of shipping they want|
 ## WALLET
 | test name | description |
 | --- | --- |
 |test_wallet_created_in_account_creation| tests if a wallet is created for a user when a user creates an account|
 |test_redeem| tests various behaviours related to redeeming tokens. This includes redeeming and checking balance before and after the api call. Additionally checks that a user cannot invoke redeem more than once per day.|
+|test_winning_auction_removes_tokens | tests if, after an auction ends, a user will have their money removed if they win an auction|
