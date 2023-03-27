@@ -42,19 +42,18 @@ class Transaction {
         row.sender_id,
         row.type,
         row.amount,
-        row.transaction_time
+        new Date(row.transaction_time)
       );
     });
   }
 
   static async create({ reciever_id, sender_id, type, amount }) {
     const transaction_id = uuid();
+    const transaction_time = new Date(Date.now()).toISOString();
     const row = (
       await Database.execute(
         `INSERT INTO transactions (id, reciever_id, sender_id, type, amount, transaction_time)
-            VALUES ($1, $2, $3, $4, $5, to_timestamp(${Date(
-              0
-            )} / 1000.0)) RETURNING *`,
+            VALUES ($1, $2, $3, $4, $5, to_timestamp('${transaction_time}', 'YYYY-MM-DD"T"HH24:MI:SS.ff3"Z"')) RETURNING *`,
         [transaction_id, reciever_id, sender_id, type, amount]
       )
     ).rows[0];
@@ -64,7 +63,7 @@ class Transaction {
       row.reciever_id,
       row.type,
       row.amount,
-      Date(row.last_redeem_time * 1000)
+      new Date(row.transaction_time)
     );
   }
 

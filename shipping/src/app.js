@@ -14,14 +14,18 @@ app.get("/orders/:user_id", (req, res) => {
 });
 
 app.post("/order", (req, res) => {
-  WalletController.create(req, res);
+  ShippingController.create(req, res);
 });
 
 app.post("/order/:order_id", (req, res) => {
   ShippingController.update(req, res);
 });
 
-app.post("/address/:user_id", (req, res) => {
+app.get("/address/:user_id", (req, res) => {
+  ShippingController.get_default_address(req, res);
+});
+
+app.post("/address", (req, res) => {
   ShippingController.create_default_address(req, res);
 });
 

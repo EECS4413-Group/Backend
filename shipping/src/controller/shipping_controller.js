@@ -5,32 +5,56 @@ const fetch = require("node-fetch");
 const get_listing = async (listing_id) => {
   var response;
   try {
-    response = await fetch(`http://catalog:8081/listing/${listing_id}`, {
+    response = await fetch(`http://catalog:8083/listing/${listing_id}`, {
       method: "GET",
     });
   } catch (e) {}
+  if (response.status > 300) {
+    return {};
+  }
   return response.json();
 };
 
 const get_bid = async (bid_id) => {
   var response;
   try {
-    response = await fetch(`http://marketplace:8083/bid/${bid_id}`, {
+    response = await fetch(`http://marketplace:8081/bid/${bid_id}`, {
       method: "GET",
     });
-  } catch (e) {}
+  } catch (e) {
+    console.log(e);
+  }
+  if (response.status > 300) {
+    return {};
+  }
   return response.json();
 };
 
 class ShippingController {
   static async show(req, res) {
     const user_id = req.params.user_id;
-    const status_filter = req.params.status_filter || "";
+    const status_filter = req.query.status_filter || "";
     if (!user_id) {
       return res.status(500).end();
     }
     const orders = await Order.find_all_by_user_id(user_id, status_filter);
-    res.json({ orders: orders });
+
+    if (orders == null) {
+      return res.json({ orders: orders });
+    }
+
+    const new_orders = [];
+    for (let i = 0; i < orders.length; i++) {
+      var new_order = {};
+      new_order.bid = await get_bid(orders[i].bid_id);
+      new_order.address = await Address.find_by_id(orders[i].address_id);
+      new_order.listing = await get_listing(orders[i].listing_id);
+      new_order.user_id = orders[i].user_id;
+      new_order.id = orders[i].id;
+      new_order.status = orders[i].status;
+      new_orders.push(new_order);
+    }
+    res.json({ orders: new_orders });
   }
 
   static async create(req, res) {
@@ -51,70 +75,34 @@ class ShippingController {
       console.log(e);
       return res.status(500).end();
     }
-    res.json(order);
+    res.status(201).json(order);
   }
 
   static async update(req, res) {
+    const order_id = req.params.order_id;
     const {
       user,
-      body: { order_id, action, address },
+      body: { shipping_type, address },
     } = req.body;
+    const order = await Order.find_by_id(order_id);
 
-    if (action == "confirm") {
-      // behavior if someone wants to confirm their order
-      const order = await Order.find_by_id(order_id);
-      const listing = await get_listing(order.listing_id);
-      const bid = await get_bid(order.bid_id);
-      try {
-        response = await fetch("http://wallet:8082/transaction", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            reciever_id: listing.owner_id,
-            sender_id: user.id,
-            amount: bid.value,
-          }),
-        });
-      } catch (e) {
-        console.log(e);
-      }
-      var shipping_address;
-      if (address != null) {
-        shipping_address = Address.create({ user_id: user.id, ...address });
-      } else {
-        shipping_address = Address.find_default(user_id);
-      }
-      order.update({
-        status: "confirmed",
-        address_id: shipping_address.id,
-      });
-    } else if (action == "decline") {
-      // behavior if someone want to reject order
-      const order = await Order.find_by_id(order_id);
-      const listing = await get_listing(order.listing_id);
-      const bid = await get_bid(order.bid_id);
-      try {
-        response = await fetch("http://wallet:8082/transaction", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            reciever_id: listing.owner_id,
-            sender_id: user.id,
-            amount: Math.floor(bid.value / 10),
-          }),
-        });
-      } catch (e) {
-        console.log(e);
-      }
-      order.update({
-        status: "declined",
-      });
+    var shipping_address;
+    if (address != null) {
+      shipping_address = Address.create({ user_id: user.id, ...address });
+    } else {
+      shipping_address = Address.find_default(user.id);
     }
+    order.update({
+      status: `confirmed-${shipping_type}`,
+      address_id: shipping_address.id,
+    });
     res.status(204).end();
+  }
+
+  static async get_default_address(req, res) {
+    const user_id = req.params.user_id;
+    const default_address = await Address.find_default(user_id);
+    res.json(default_address || {});
   }
 
   static async create_default_address(req, res) {
@@ -124,14 +112,18 @@ class ShippingController {
     } = req.body;
     var default_address = await Address.find_default(user.id);
     if (!default_address) {
-      default_address = await Address.create(...address);
+      default_address = await Address.create({
+        user_id: user.id,
+        is_default: true,
+        ...address,
+      });
     } else {
-      default_address = await Address.update({
+      await default_address.update({
         user_id: user.id,
         ...address,
       });
     }
-    res.json(new_address);
+    res.status(201).json(default_address);
   }
   static async delete() {}
 }

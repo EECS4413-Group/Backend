@@ -6,8 +6,8 @@ class Migrator {
     var initialized = false;
     while (!initialized) {
       try {
-        await Account.migrate();
-        await Transaction.migrate();
+        await Order.migrate();
+        await Address.migrate();
         initialized = true;
         console.log("Migrated successfully");
       } catch (e) {

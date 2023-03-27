@@ -113,6 +113,8 @@ services:
             - "./shipping:/app"
         depends_on:
             - db
+        links:
+            - marketplace
 
     auction_daemon:
         build: .

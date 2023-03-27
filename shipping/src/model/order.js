@@ -29,11 +29,12 @@ class Order {
     const rows = await Database.execute(
       "SELECT * FROM orders where id = $1 LIMIT 1",
       [order_id]
-    ).rows;
-    if (rows.length == 0) {
+    );
+
+    if (rows.rows.length == 0) {
       return null;
     }
-    const row = rows[0];
+    const row = rows.rows[0];
     return new Order(
       row.id,
       row.user_id,
@@ -47,8 +48,8 @@ class Order {
   static async find_all_by_user_id(user_id, status_filter) {
     const rows = (
       await Database.execute(
-        "SELECT * FROM orders WHERE user_id = $1 AND status = $2",
-        [user_id, status_filter]
+        `SELECT * FROM orders WHERE user_id = $1 AND status LIKE '%${status_filter}%'`,
+        [user_id]
       )
     ).rows;
     if (rows.length == 0) {
@@ -71,7 +72,7 @@ class Order {
     const order_id = uuid();
     const row = (
       await Database.execute(
-        `INSERT INTO orderss (id, user_id, listing_id, bid_id, address_id, status)
+        `INSERT INTO orders (id, user_id, listing_id, bid_id, address_id, status)
             VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
         [order_id, user_id, listing_id, bid_id, address_id, status]
       )
@@ -91,7 +92,7 @@ class Order {
       await Database.execute(
         `UPDATE orders SET
             status=$1,
-            address_id=$2,
+            address_id=$2
             WHERE id=$3 RETURNING *`,
         [status, address_id, this.id]
       )

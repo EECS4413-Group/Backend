@@ -10,6 +10,7 @@ def winner_tasks(listing):
     winning_bid = api.get_winning_bid(listing)
     success = api.create_wallet_transaction(listing, winning_bid)
     if not success:
+        print(f'failed to create transaction for {listing.id}')
         return
     success = api.create_shipping_notification(listing, winning_bid)
     if not success:
@@ -17,11 +18,11 @@ def winner_tasks(listing):
 
 
 def main():
-    time.sleep(30)
+    time.sleep(20)
     while (True):
         try:
             print("started")
-            end = datetime.now() + timedelta(seconds=5)
+            end = datetime.now() + timedelta(seconds=2)
             listings = api.get_expiring_listings()
             listings.sort(key=lambda x: x.end_date)
             for listing in listings:
@@ -31,7 +32,7 @@ def main():
             print("finished")
         except Exception as e:
             print(traceback.format_exc())
-            time.sleep(5)
+            time.sleep(2)
 
 
 if __name__ == "__main__":

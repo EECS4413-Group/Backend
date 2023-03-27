@@ -63,7 +63,7 @@ class Listing {
 
   static async find_all_ending_soon() {
     const result = await Database.execute(
-      `Select * From listings WHERE type LIKE 'normal' AND end_date BETWEEN LOCALTIMESTAMP AND LOCALTIMESTAMP + INTERVAL '5 seconds'`
+      `Select * From listings WHERE type LIKE 'normal' AND end_date BETWEEN LOCALTIMESTAMP AND LOCALTIMESTAMP + INTERVAL '3 seconds'`
     );
 
     return result.rows.map((row) => {

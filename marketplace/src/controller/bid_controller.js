@@ -8,6 +8,9 @@ const get_user_wallet = async (user_id) => {
       method: "GET",
     });
   } catch (e) {}
+  if (response.status > 300) {
+    return {};
+  }
   return response.json();
 };
 
@@ -18,6 +21,9 @@ const get_listing = async (listing_id) => {
       method: "GET",
     });
   } catch (e) {}
+  if (response.status > 300) {
+    return {};
+  }
   return response.json();
 };
 
@@ -29,7 +35,6 @@ class BidController {
       return res.status(500).end();
     }
     const bid = await Bid.find_highest_for_listing(listing_id);
-    console.log(bid);
     if (!bid) {
       res.statusMessage = `no bids for listing with id ${listing_id}`;
       return res.status(404).end();
@@ -44,12 +49,20 @@ class BidController {
     } = req.body;
 
     const user_wallet = await get_user_wallet(user.id);
+    if (user_wallet == {}) {
+      res.statusMessage = `internal error`;
+      return res.status(500).end();
+    }
     if (user_wallet.balance < bid.amount) {
       res.statusMessage = `user does not have enough tokens to place bid`;
       return res.status(403).end();
     }
 
     const current_listing = await get_listing(bid.listing_id);
+    if (current_listing == {}) {
+      res.statusMessage = `internal error`;
+      return res.status(500).end();
+    }
 
     if (current_listing.type == "normal") {
       if (Date.now() > Date.parse(current_listing.end_date)) {

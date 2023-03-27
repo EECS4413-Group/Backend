@@ -51,7 +51,7 @@ class WalletController {
       return res.status(400).end();
     }
 
-    const Account_sender = await Account.find_by_id(sender_id);
+    const Account_sender = await Account.find_by_owner_id(sender_id);
     if (Account_sender - amount < 0) {
       res.statusMessage =
         "transaction not possible, user doesn't not have enough tokens";
@@ -77,21 +77,23 @@ class WalletController {
       return res.status(400).end();
     }
 
-    const account_sender = await Account.find_by_id(sender_id);
+    const account_sender = await Account.find_by_owner_id(sender_id);
     if (account_sender.balance - amount < 0) {
       res.statusMessage =
         "transaction not possible, user doesn't not have enough tokens";
       res.status(403).end();
     }
 
-    const account_reciever = await Account.find_by_id(reciever_id);
+    const account_reciever = await Account.find_by_owner_id(reciever_id);
     if (!account_reciever) {
       res.statusMessage = `reciever with id ${reciever_id} does not have a wallet`;
       res.status(403).end();
     }
 
-    account_sender.update({ balance: account_sender.balance - amount });
-    account_reciever.update({ balance: account_reciever + amount });
+    await account_sender.update({ balance: account_sender.balance - amount });
+    await account_reciever.update({
+      balance: account_reciever.balance + amount,
+    });
     Transaction.create({
       reciever_id: reciever_id,
       sender_id: sender_id,
@@ -103,7 +105,7 @@ class WalletController {
 
   static async redeem_tokens(req, res) {
     // FIXED CONSTANT, SHOULD BE LOADED FROM ENVIRONMENT
-    const TOKENS_PER_REDMPTION = 4000;
+    const TOKENS_PER_REDEMPTION = 4000;
     const MS_PER_MINUTES = 60000;
     const TIME_BETWEEN_REDEEMS = 60 * 24 * MS_PER_MINUTES;
 
@@ -123,9 +125,15 @@ class WalletController {
       return res.status(403).end();
     }
 
-    account_redeemer.update({
-      balance: account_redeemer.balance + TOKENS_PER_REDMPTION,
+    await account_redeemer.update({
+      balance: account_redeemer.balance + TOKENS_PER_REDEMPTION,
       last_redeem_time: new Date(Date.now()),
+    });
+    Transaction.create({
+      reciever_id: account_redeemer.owner_id,
+      sender_id: account_redeemer.owner_id,
+      type: "redeem",
+      amount: TOKENS_PER_REDEMPTION,
     });
     res.json(account_redeemer);
   }

@@ -52,14 +52,34 @@ class Address {
       return new Address(
         row.id,
         row.user_id,
-        row.street_name,
         row.street_number,
+        row.street_name,
         row.apt_number,
-        row.province,
         row.postal_code,
+        row.province,
         row.is_default
       );
     });
+  }
+
+  static async find_by_id(id) {
+    const rows = (
+      await Database.execute("SELECT * FROM addresses WHERE id = $1", [id])
+    ).rows;
+    if (rows.length == 0) {
+      return null;
+    }
+    const row = rows[0];
+    return new Address(
+      row.id,
+      row.user_id,
+      row.street_number,
+      row.street_name,
+      row.apt_number,
+      row.postal_code,
+      row.province,
+      row.is_default
+    );
   }
 
   static async find_default(user_id) {
@@ -76,11 +96,11 @@ class Address {
     return new Address(
       row.id,
       row.user_id,
-      row.street_name,
       row.street_number,
+      row.street_name,
       row.apt_number,
-      row.province,
       row.postal_code,
+      row.province,
       row.is_default
     );
   }
@@ -112,7 +132,7 @@ class Address {
       )
     ).rows[0];
     return new Address(
-      row.address_id,
+      row.id,
       row.user_id,
       row.street_number,
       row.street_name,
@@ -132,12 +152,12 @@ class Address {
   }) {
     const newRow = (
       await Database.execute(
-        `UPDATE orders SET
+        `UPDATE addresses SET
             street_number = $1,
             street_name = $2,
             apt_number = $3,
             postal_code = $4,
-            province = $5,
+            province = $5
             WHERE id=$6 AND is_default = TRUE RETURNING *`,
         [street_number, street_name, apt_number, postal_code, province, this.id]
       )

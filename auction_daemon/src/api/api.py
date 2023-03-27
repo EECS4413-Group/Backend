@@ -11,8 +11,9 @@ MARKETPLACE_ENDPOINT = os.environ.get("MARKETPLACE_ENDPOINT")
 
 
 def get_expiring_listings():
-    print('getting listings that end within next 5 seconds')
-    response = requests.get(f'http://{CATALOG_ENDPOINT}:8083/listing/ending_soon')
+    print('getting listings that end within next 2 seconds')
+    response = requests.get(
+        f'http://{CATALOG_ENDPOINT}:8083/listing/ending_soon')
     body = json.loads(response.content)
 
     return [Auction(listing) for listing in body.get('listings', [])]
@@ -20,7 +21,7 @@ def get_expiring_listings():
 
 def create_shipping_notification(listing, winning_bid):
     response = requests.post(
-        f'http://{SHIPPING_ENDPOINT}:8084/orders',
+        f'http://{SHIPPING_ENDPOINT}:8084/order',
         json={
             "user_id": winning_bid.bidder_id,
             "listing_id": listing.id,
@@ -35,9 +36,11 @@ def create_wallet_transaction(listing, winning_bid):
     response = requests.post(
         f'http://{WALLET_ENDPOINT}:8082/transaction',
         json={
-            "sender_id": winning_bid.bidder_id,
-            "reciever_id": listing.owner_id,
-            "amount": winning_bid.amount
+            "body": {
+                "sender_id": winning_bid.bidder_id,
+                "reciever_id": listing.owner_id,
+                "amount": winning_bid.amount
+            }
         })
     if response.status_code != 200:
         return None
@@ -47,7 +50,6 @@ def create_wallet_transaction(listing, winning_bid):
 def get_winning_bid(listing):
     response = requests.get(
         f'http://{MARKETPLACE_ENDPOINT}:8081/bid/{listing.id}')
-    print(response.content)
     if response.status_code != 200:
         return None
 
