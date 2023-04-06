@@ -55,7 +55,7 @@ build-dev: build-auth_gateway-dev build-frontend-dev build-auction_daemon-dev bu
 
 up: build
 	docker-compose up -d #> /dev/null
-	sleep 10
+	sleep 5
 	./scripts/create_databases.sh
 
 test:
