@@ -1,7 +1,7 @@
 version: "3"
 services:
     frontend:
-        build: .
+        build: ./frontend
         image: frontend
         container_name: frontend
         ports:
@@ -19,7 +19,7 @@ services:
             - auth_gateway
 
     auth_gateway:
-        build: .
+        build: ./auth_gateway
         image: auth_gateway
         container_name: auth_gateway
         ports:
@@ -43,7 +43,7 @@ services:
             - wallet
 
     marketplace:
-        build: .
+        build: ./marketplace
         image: marketplace
         container_name: marketplace
         expose:
@@ -64,7 +64,7 @@ services:
 
 
     wallet:
-        build: .
+        build: ./wallet
         image: wallet
         container_name: wallet
         expose:
@@ -81,7 +81,7 @@ services:
             - db
 
     catalog:
-        build: .
+        build: ./catalog
         image: catalog
         container_name: catalog
         expose:
@@ -98,7 +98,7 @@ services:
             - db
 
     shipping:
-        build: .
+        build: ./shipping
         image: shipping
         container_name: shipping
         expose:
@@ -117,7 +117,7 @@ services:
             - marketplace
 
     auction_daemon:
-        build: .
+        build: ./auction_daemon
         image: auction_daemon
         container_name: auction_daemon
         environment:
