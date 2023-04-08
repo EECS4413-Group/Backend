@@ -17,10 +17,10 @@ const Main = styled.div`
 `;
 
 function Header() {
-  const [loggedIn, setLoggedIn] = useState(false);
-  useEffect(() => {
-    setLoggedIn(localStorage.getItem("authorization") != null);
-  });
+  const [loggedIn, setLoggedIn] = useState(
+    localStorage.getItem("authorization") != null
+  );
+
   let navigate = useNavigate();
   return (
     <div>
@@ -29,7 +29,9 @@ function Header() {
           <button
             onClick={() => {
               localStorage.removeItem("authorization");
+              setLoggedIn(false);
               navigate("/");
+              window.location.reload();
             }}
           >
             logout

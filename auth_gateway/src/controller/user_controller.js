@@ -9,7 +9,7 @@ class UserController {
   // validate user doesn't exist already (login)
   // validate params are correct
   static async create(req, res) {
-    const { login, password, firstName, lastName } = req.body;
+    const { login, password, firstName, lastName, address } = req.body;
     if (!login) {
       res.statusMessage = "Must specify 'login' to create account";
       return res.status(400).end();
@@ -45,6 +45,20 @@ class UserController {
       });
     } catch (e) {
       console.log(e);
+    }
+
+    if (address) {
+      try {
+        response = await fetch("http://shipping:8084/address", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ user: user, body: { address: address } }),
+        });
+      } catch (e) {
+        console.log(e);
+      }
     }
     const token = await Token.create(user);
     res.status(201).json(token);

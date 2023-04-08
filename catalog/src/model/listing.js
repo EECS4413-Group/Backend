@@ -87,7 +87,7 @@ class Listing {
       ])
     ).rows;
     if (rows.length == 0) {
-      return null;
+      return [];
     }
     return rows.map((row) => {
       return new Listing(

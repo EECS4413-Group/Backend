@@ -2,10 +2,9 @@ const { Listing } = require("../model/listing");
 
 class ListingController {
   static async index(req, res) {
-    const name_filters = req.query.search;
+    let name_filters = req.query.search;
     if (!name_filters) {
-      res.statusMessage = "No search query provided";
-      return res.status(400).end();
+      name_filters = "";
     }
     const listings = await Listing.find_all_by_name(name_filters);
     res.json({ listings: listings });
@@ -50,7 +49,7 @@ class ListingController {
       missing_values.push("end_date");
     }
     if (missing_values.length > 0) {
-      missing_args_string = missing_values.reduce((acc, curr) => {
+      let missing_args_string = missing_values.reduce((acc, curr) => {
         return `${acc}, ${curr}`;
       }, "");
       res.statusMessage = `failed to provide the following arguments [${missing_args_string}]`;

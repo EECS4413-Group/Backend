@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const makeRequest = (method, url, body, headers = {}) => {
-  const bearer_token = window.localStorage.getItem("bearer_token");
+  const bearer_token = window.localStorage.getItem("authorization");
   if (bearer_token) {
     headers["authorization"] = bearer_token;
   }
