@@ -1,4 +1,5 @@
-import { React } from "react";
+import { useState } from "react";
+import { React, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
@@ -16,19 +17,47 @@ const Main = styled.div`
 `;
 
 function Header() {
+  const [loggedIn, setLoggedIn] = useState(false);
+  useEffect(() => {
+    setLoggedIn(localStorage.getItem("authorization") != null);
+  });
   let navigate = useNavigate();
   return (
-    <Main>
-      <div>
-        <button
-          onClick={() => {
-            navigate("/sign_up");
-          }}
-        >
-          login
-        </button>
-      </div>
-    </Main>
+    <div>
+      {loggedIn ? (
+        <Main>
+          <button
+            onClick={() => {
+              localStorage.removeItem("authorization");
+              navigate("/");
+            }}
+          >
+            logout
+          </button>
+        </Main>
+      ) : (
+        <Main>
+          <div>
+            <button
+              onClick={() => {
+                navigate("/login");
+              }}
+            >
+              login
+            </button>
+          </div>
+          <div>
+            <button
+              onClick={() => {
+                navigate("/sign_up");
+              }}
+            >
+              create account
+            </button>
+          </div>
+        </Main>
+      )}
+    </div>
   );
 }
 
