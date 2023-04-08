@@ -5,10 +5,12 @@ const { Migrator } = require("./database/migrator");
 const { UserController } = require("./controller/user_controller");
 const { Token } = require("./model/token");
 
+const cors = require("cors");
 Database.init();
 Migrator.migrateAll();
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 // register new user

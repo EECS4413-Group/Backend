@@ -8,8 +8,6 @@ services:
             - "3000:3000"
         expose:
             - "3000"
-        environment:
-            API_HOST: ${API_HOST}
         command: npm start
         volumes:
             - "./frontend:/app"

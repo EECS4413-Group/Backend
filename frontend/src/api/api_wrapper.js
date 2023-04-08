@@ -1,20 +1,22 @@
-import axios from 'axios';
+import axios from "axios";
 
-const makeRequest = (method, url, body, headers) => {
+const makeRequest = (method, url, body, headers = {}) => {
   const bearer_token = window.localStorage.getItem("bearer_token");
-  if (auth_tokens) {
-        headers['authorization'] = bearer_token;
+  if (bearer_token) {
+    headers["authorization"] = bearer_token;
   }
-  headers['Content-Type'] = "application/json";
+  headers["Content-Type"] = "application/json";
   return new Promise((resolve, reject) => {
     axios({
-        method,
-        url: `${process.env.API_HOST}${url}`,
-        data: body,
-        headers: headers,
-      }).then((response) => {
+      method,
+      url: `http://localhost:8080${url}`,
+      data: body,
+      headers: headers,
+    })
+      .then((response) => {
         resolve(response);
-      }).catch((err) => {
+      })
+      .catch((err) => {
         reject(err);
       });
   });
@@ -23,26 +25,25 @@ const makeRequest = (method, url, body, headers) => {
 // do not refactor
 // might be neccessary to add intermediate steps
 const get = (url, headers = {}) => {
-    return makeRequest('GET', url, null, headers)
-}
+  return makeRequest("GET", url, null, headers);
+};
 const post = (url, body = {}, headers = {}) => {
-    return makeRequest('POST', url, body, headers)
-}
+  return makeRequest("POST", url, body, headers);
+};
 
 const put = (url, body = {}, headers = {}) => {
-    return makeRequest('PUT', url, body, headers)
-}
+  return makeRequest("PUT", url, body, headers);
+};
 
 const del = (url, body = {}, headers = {}) => {
-    return makeRequest('DELETE', url, body, headers)
-}
+  return makeRequest("DELETE", url, body, headers);
+};
 
-api_wrapper = {
-    get: get,
-    post: post,
-    put: put,
-    delete: del,
-}
-
+const api_wrapper = {
+  get: get,
+  post: post,
+  put: put,
+  delete: del,
+};
 
 export default api_wrapper;
