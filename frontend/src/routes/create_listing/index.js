@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api_wrapper from "../../api/api_wrapper";
 import styled from "styled-components";
@@ -18,38 +18,50 @@ const CreateListing = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [type, setType] = useState("normal");
   let navigate = useNavigate();
+  useEffect(() => {
+    if (window.localStorage.getItem("authorization") == null) {
+      navigate("/");
+    }
+
+    api_wrapper
+      .get("/verify_login")
+      .then((res) => {
+        if (res.status != 200) {
+          navigate("/");
+        }
+      })
+      .catch(() => {
+        window.localStorage.removeItem("authorization");
+        navigate("/");
+      });
+  }, []);
 
   const handleSubmit = (event) => {
     //Prevent page reload
     event.preventDefault();
 
-    var { name, description, type, target_price, end_date } = document.forms[0];
+    var { name, description, type, price, end_date } = document.forms[0];
 
     const data = {
       name: name.value,
       type: type.value,
       description: description.value,
-      price: target_price?.value || 0,
+      price: price?.value || 0,
       start_date: new Date().toISOString(),
       end_date: end_date?.value || new Date().toISOString(),
     };
 
-    console.log(data);
-
     api_wrapper
       .post("/catalog/listing", data)
       .then((res) => {
-        console.log(res);
         if (res.status != 201) {
           setErrorMessage("username already exists");
         } else {
-          navigate("/");
+          navigate("/listings");
           window.location.reload();
         }
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   };
 
   const renderErrorMessage = () => {
@@ -77,7 +89,7 @@ const CreateListing = () => {
               type="radio"
               name="type"
               value="normal"
-              checked
+              defaultChecked
               onClick={() => {
                 setType("normal");
               }}

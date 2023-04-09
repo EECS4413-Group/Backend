@@ -9,13 +9,31 @@ const Results = styled.div`
 `;
 
 const ViewListings = () => {
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (window.localStorage.getItem("authorization") == null) {
+      navigate("/");
+    }
+
+    api_wrapper
+      .get("/verify_login")
+      .then((res) => {
+        if (res.status != 200) {
+          navigate("/");
+        }
+      })
+      .catch(() => {
+        window.localStorage.removeItem("authorization");
+        navigate("/");
+      });
+  }, []);
+
   const [listings, setListings] = useState([]);
   useEffect(() => {
     api_wrapper.get(`/catalog/listing`).then((res) => {
       setListings(res.data.listings);
     });
   }, []);
-  let navigate = useNavigate();
   const query_new = () => {
     const query_word = document.getElementById("search-box").value;
     api_wrapper.get(`/catalog/listing?search=${query_word}`).then((res) => {

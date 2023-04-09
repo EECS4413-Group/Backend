@@ -17,8 +17,11 @@ const get_listing = async (listing_id) => {
 
 const get_bid = async (bid_id) => {
   var response;
+  if (!bid_id) {
+    return {};
+  }
   try {
-    response = await fetch(`http://marketplace:8081/bid/${bid_id}`, {
+    response = await fetch(`http://marketplace:8081/bid/id/${bid_id}`, {
       method: "GET",
     });
   } catch (e) {
@@ -31,17 +34,13 @@ const get_bid = async (bid_id) => {
 };
 
 class ShippingController {
-  static async show(req, res) {
+  static async index(req, res) {
     const user_id = req.params.user_id;
     const status_filter = req.query.status_filter || "";
     if (!user_id) {
       return res.status(500).end();
     }
     const orders = await Order.find_all_by_user_id(user_id, status_filter);
-
-    if (orders == null) {
-      return res.json({ orders: orders });
-    }
 
     const new_orders = [];
     for (let i = 0; i < orders.length; i++) {
@@ -55,6 +54,21 @@ class ShippingController {
       new_orders.push(new_order);
     }
     res.json({ orders: new_orders });
+  }
+
+  static async show(req, res) {
+    const order_id = req.params.order_id;
+    const user_id = req.params.user_id;
+    const order = await Order.find_by_id(order_id);
+    order.bid = await get_bid(order.bid_id);
+    order.address = order.address_id
+      ? await Address.find_by_id(order.address_id)
+      : await Address.find_default(user_id);
+    order.listing = await get_listing(order.listing_id);
+    order.user_id = order.user_id;
+    order.id = order.id;
+    order.status = order.status;
+    res.status(200).json(order);
   }
 
   static async create(req, res) {
@@ -75,6 +89,12 @@ class ShippingController {
       console.log(e);
       return res.status(500).end();
     }
+    order.bid = await get_bid(order.bid_id);
+    order.address = await Address.find_by_id(order.address_id);
+    order.listing = await get_listing(order.listing_id);
+    order.user_id = order.user_id;
+    order.id = order.id;
+    order.status = order.status;
     res.status(201).json(order);
   }
 

@@ -27,9 +27,61 @@ const get_listing = async (listing_id) => {
   return response.json();
 };
 
+const create_new_shipping_order = async (listing_id, bid_id, user_id) => {
+  var response;
+  try {
+    response = await fetch("http://shipping:8084/order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        user_id: user_id,
+        listing_id: listing_id,
+        bid_id: bid_id,
+      }),
+    });
+  } catch (e) {}
+};
+const create_new_wallet_transaction = async (
+  sender_id,
+  reciever_id,
+  amount
+) => {
+  var response;
+  try {
+    response = await fetch("http://wallet:8082/transaction", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        body: {
+          sender_id: sender_id,
+          reciever_id: reciever_id,
+          amount: amount,
+        },
+      }),
+    });
+  } catch (e) {}
+};
+
 class BidController {
   static async show(req, res) {
-    console.log(req.params);
+    const bid_id = req.params.bid_id;
+    if (!bid_id) {
+      return res.status(500).end();
+    }
+    const bid = await Bid.find_by_id(bid_id);
+    if (!bid) {
+      res.statusMessage = `no bid with id ${bid_id}`;
+      return res.status(404).end();
+    }
+    console.log(bid);
+    res.json(bid);
+  }
+
+  static async show_highest_bid(req, res) {
     const listing_id = req.params.listing_id;
     if (!listing_id) {
       return res.status(500).end();
@@ -104,12 +156,12 @@ class BidController {
       time_delta = Math.floor(time_delta / 60000); // 60 seconds in a minute, 1000 milliseconds in a minute
 
       // current price is the max of half off and
-      // 2% drop every minute that the listing is live
+      // 1% drop every minute that the listing is live
       // aka start at full price and drop 2% of full price until
       // listing is half off
       current_price = Math.max(
         current_price / 2,
-        current_price * (1 - 0.02 * time_delta)
+        current_price * (1 - 0.01 * time_delta)
       );
 
       if (current_price > bid.amount) {
@@ -133,6 +185,13 @@ class BidController {
         console.log(e);
         return res.status(500).end();
       }
+      create_new_wallet_transaction(
+        user.id,
+        current_listing.owner_id,
+        Math.min(bid.amount, current_listing.price)
+      );
+      create_new_shipping_order(current_listing.id, new_bid.id, user.id);
+
       res.json(new_bid);
     } else {
       res.status(404).end();

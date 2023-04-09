@@ -21,6 +21,20 @@ class Bid {
     );
   }
 
+  static async find_by_id(bid_id) {
+    const rows = (
+      await Database.execute("Select * FROM bids WHERE id = $1 LIMIT 1", [
+        bid_id,
+      ])
+    ).rows;
+
+    if (rows.length == 0) {
+      return null;
+    }
+    const row = rows[0];
+    return new Bid(row.id, row.listing_id, row.bidder_id, row.amount);
+  }
+
   static async find_highest_for_listing(listing_id) {
     const rows = (
       await Database.execute(
@@ -45,7 +59,7 @@ class Bid {
         [bid_id, listing_id, bidder_id, amount]
       )
     ).rows[0];
-    return new Bid(row.bid_id, row.listing_id, row.bidder_id, row.amount);
+    return new Bid(row.id, row.listing_id, row.bidder_id, row.amount);
   }
 
   delete() {}

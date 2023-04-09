@@ -121,6 +121,7 @@ class WalletController {
       new Date(Date.now() - TIME_BETWEEN_REDEEMS).getTime() <
       account_redeemer.last_redeem_time.getTime()
     ) {
+      console.log("foo");
       res.statusMessage = `Please wait before redeeming again`;
       return res.status(403).end();
     }

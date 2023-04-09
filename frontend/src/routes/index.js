@@ -19,7 +19,7 @@ const Router = () => {
       <Route exact path="/login" element={<Login />} />
       <Route exact path="/listings/new" element={<CreateListing />} />
       <Route exact path="/listings" element={<ViewListings />} />
-      <Route path="/listings/:id" element={<ViewListing />} />
+      <Route path="/listing/:id" element={<ViewListing />} />
       <Route exact path="/wallet" element={<Wallet />} />
       <Route exact path="/orders" element={<ViewOrders />} />
       <Route path="/orders/:id" element={<ViewOrder />} />

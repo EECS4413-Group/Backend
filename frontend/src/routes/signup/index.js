@@ -51,7 +51,6 @@ const SignUp = () => {
     api_wrapper
       .post("/sign_up", data)
       .then((res) => {
-        console.log(res);
         if (res.status != 201) {
           setErrorMessage("username already exists");
         } else {
@@ -60,9 +59,7 @@ const SignUp = () => {
           window.location.reload();
         }
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   };
 
   const renderErrorMessage = () => {

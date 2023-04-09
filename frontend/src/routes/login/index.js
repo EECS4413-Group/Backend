@@ -20,7 +20,6 @@ const Login = () => {
     api_wrapper
       .post("/sign_in", { login: uname.value, password: pass.value })
       .then((res) => {
-        console.log(res);
         if (res.status != 200) {
           setErrorMessage("invalid username or password");
         } else {
@@ -29,9 +28,7 @@ const Login = () => {
           window.location.reload();
         }
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   };
 
   // Generate JSX code for error message

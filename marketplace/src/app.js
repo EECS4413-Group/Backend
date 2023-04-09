@@ -10,6 +10,10 @@ const app = express();
 app.use(express.json());
 
 app.get("/bid/:listing_id", (req, res) => {
+  BidController.show_highest_bid(req, res);
+});
+
+app.get("/bid/id/:bid_id", (req, res) => {
   BidController.show(req, res);
 });
 

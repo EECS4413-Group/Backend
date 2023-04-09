@@ -158,7 +158,7 @@ def test_winning_auction_creates_shipping_label_and_user_can_update_label():
     response = requests.post(
         f'http://{API}/shipping/order/{order["id"]}',
         headers={'authorization': token2},
-        json={"shipping_type": "regular"}
+        json={"shipping_type": "standard"}
     )
 
     print(response.status_code)

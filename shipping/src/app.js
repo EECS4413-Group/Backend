@@ -10,6 +10,10 @@ const app = express();
 app.use(express.json());
 
 app.get("/orders/:user_id", (req, res) => {
+  ShippingController.index(req, res);
+});
+
+app.get("/order/:order_id/:user_id", (req, res) => {
   ShippingController.show(req, res);
 });
 

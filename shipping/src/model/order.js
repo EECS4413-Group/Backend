@@ -53,7 +53,7 @@ class Order {
       )
     ).rows;
     if (rows.length == 0) {
-      return null;
+      return [];
     }
 
     return rows.map((row) => {
