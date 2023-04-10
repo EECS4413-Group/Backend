@@ -56,6 +56,7 @@ class Account {
   }
 
   async update({ balance, last_redeem_time = this.last_redeem_time }) {
+    console.log(this.owner_id, balance);
     const newRow = (
       await Database.execute(
         `UPDATE accounts SET

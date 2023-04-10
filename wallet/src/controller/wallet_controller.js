@@ -77,20 +77,22 @@ class WalletController {
       return res.status(400).end();
     }
 
-    const account_sender = await Account.find_by_owner_id(sender_id);
+    let account_sender = await Account.find_by_owner_id(sender_id);
     if (account_sender.balance - amount < 0) {
       res.statusMessage =
         "transaction not possible, user doesn't not have enough tokens";
       res.status(403).end();
     }
 
-    const account_reciever = await Account.find_by_owner_id(reciever_id);
+    let account_reciever = await Account.find_by_owner_id(reciever_id);
     if (!account_reciever) {
       res.statusMessage = `reciever with id ${reciever_id} does not have a wallet`;
       res.status(403).end();
     }
 
+    account_sender = await Account.find_by_owner_id(sender_id);
     await account_sender.update({ balance: account_sender.balance - amount });
+    account_reciever = await Account.find_by_owner_id(reciever_id);
     await account_reciever.update({
       balance: account_reciever.balance + amount,
     });

@@ -168,6 +168,14 @@ const ViewListing = () => {
       return <></>;
     }
 
+    const calculated_time =
+      Date.now() +
+      60000 -
+      Math.floor(
+        (((Date.now() - Date.parse(listing.start_date)) / 60000) % 1) * 60
+      ) *
+        1000;
+
     return (
       <Main>
         <>
@@ -177,19 +185,7 @@ const ViewListing = () => {
         {currentBid == 0 ? (
           <>
             Time Left until next interval:
-            <Countdown
-              date={
-                1000 * Math.floor(Date.now() / 1000) +
-                60000 -
-                Math.floor(
-                  (((Date.now() - Date.parse(listing.start_date)) /
-                    (60 * 1000)) %
-                    1) *
-                    60
-                ) *
-                  1000
-              }
-            />
+            <Countdown date={calculated_time} />
             <button type="submit" onClick={HandleBuyNow}>
               Buy Now
             </button>
