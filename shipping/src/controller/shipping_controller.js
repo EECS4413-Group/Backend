@@ -108,9 +108,9 @@ class ShippingController {
 
     var shipping_address;
     if (address != null) {
-      shipping_address = Address.create({ user_id: user.id, ...address });
+      shipping_address = await Address.create({ user_id: user.id, ...address });
     } else {
-      shipping_address = Address.find_default(user.id);
+      shipping_address = await Address.find_default(user.id);
     }
     order.update({
       status: `confirmed-${shipping_type}`,
